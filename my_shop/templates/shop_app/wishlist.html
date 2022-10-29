@@ -1,0 +1,113 @@
+{% extends 'shop_app/base.html' %}
+{% load static %}
+{% load poll_extras %}
+{% block cart_window %}
+    <div class="block-cart action">
+        <a class="icon-link" href="{% url 'cart' profile.cart_id %}">
+            <i class="flaticon-shopping-bag"></i>
+            <span class="count">{{ profile.count_product_in_cart }}</span>
+            <span class="text">
+                                    <span class="sub">Your Cart:</span>
+                                    ${{ profile.balance }} </span>
+        </a>
+    </div>
+{% endblock %}
+{% block wish_list_window %}
+    {% if user.is_authenticated %}
+    <a class="icon-link" href="{% url 'wishlist' object.pk %}">
+        <i class="flaticon-heart"></i>
+        <span class="count">{{ profile.count_product_in_wish_list }}</span>
+        <span class="text">
+                                    <span class="sub">Favorite</span>
+                                    My Wishlist </span>
+    </a>
+{% else %}
+    <a class="icon-link" href="{% url 'login' %}">
+        <i class="flaticon-heart"></i>
+        <span class="count">0</span>
+        <span class="text">
+                                    <span class="sub">Favorite</span>
+                                    My Wishlist </span>
+    </a>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+    <main>
+        <!-- page-banner-area-start -->
+        <div class="page-banner-area page-banner-height-2" data-background="assets/img/banner/page-banner-4.jpg">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="page-banner-content text-center">
+                            <h4 class="breadcrumb-title">Wishlist</h4>
+                            <div class="breadcrumb-two">
+                                <nav>
+                                    <nav class="breadcrumb-trail breadcrumbs">
+                                        <ul class="breadcrumb-menu">
+                                            <li class="breadcrumb-trail">
+                                                <a href="index.html"><span>Home</span></a>
+                                            </li>
+                                            <li class="trail-item">
+                                                <span>Wishlist</span>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- page-banner-area-end -->
+
+        <!-- cart-area-start -->
+        <section class="cart-area pb-120 pt-120">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <form action="#">
+                            <div class="table-content table-responsive">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th class="product-thumbnail">Images</th>
+                                        <th class="cart-product-name">Product</th>
+                                        <th class="product-price">Unit Price</th>
+                                        <th class="product-quantity">Quantity</th>
+                                        <th class="product-subtotal">After discount</th>
+                                        <th class="product-remove">Remove</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for product in object.products_in_the_preferences.all %}
+                                        <tr>
+                                            <td class="product-thumbnail"><a href="shop-details.html"><img
+                                                    src="assets/img/cart/shop-p-10.jpg" alt=""></a></td>
+                                            <td class="product-name"><a
+                                                    href="{% url 'product-detail' product.pk %}">{{ product.title }}</a></td>
+                                            <td class="product-price"><span class="amount">${{ product.price }}</span></td>
+                                            <td class="product-quantity">
+                                                <a class="tp-btn-h1" type="button" href="{% url 'cart_append' product.pk user.profile.cart_id %}">Add To Cart</a>
+                                            </td>
+                                            <td class="product-subtotal"><span class="amount">${{ product.total }}</span></td>
+                                            <td class="product-remove"><a
+                                                    href="{% url 'wishlist_remove' product_id=product.pk wish_list_id=object.pk %}"><i
+                                                    class="fa fa-times"></i></a></td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- cart-area-end -->
+
+
+    </main>
+
+{% endblock %}

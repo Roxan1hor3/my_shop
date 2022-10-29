@@ -1,0 +1,124 @@
+{% extends 'shop_app/base.html' %}
+{% load static %}
+{% load poll_extras %}
+{% block cart_window %}
+    <div class="block-cart action">
+        <a class="icon-link" href="{% url 'cart' profile.cart_id %}">
+            <i class="flaticon-shopping-bag"></i>
+            <span class="count">{{ profile.count_product_in_cart }}</span>
+            <span class="text">
+                                    <span class="sub">Your Cart:</span>
+                                    ${{ profile.balance }} </span>
+        </a>
+    </div>
+
+{% endblock %}
+{% block wish_list_window %}
+    {% if user.is_authenticated %}
+    <a class="icon-link" href="{% url 'wishlist' profile.wish_list_id %}">
+        <i class="flaticon-heart"></i>
+        <span class="count">{{ profile.count_product_in_wish_list }}</span>
+        <span class="text">
+                                    <span class="sub">Favorite</span>
+                                    My Wishlist </span>
+    </a>
+{% else %}
+    <a class="icon-link" href="{% url 'login' %}">
+        <i class="flaticon-heart"></i>
+        <span class="count">0</span>
+        <span class="text">
+                                    <span class="sub">Favorite</span>
+                                    My Wishlist </span>
+    </a>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+
+
+    <!-- offcanvas area start -->
+    <div class="offcanvas__area">
+        <div class="offcanvas__wrapper">
+            <div class="offcanvas__close">
+                <button class="offcanvas__close-btn" id="offcanvas__close-btn">
+                    <i class="fal fa-times"></i>
+                </button>
+            </div>
+            <div class="offcanvas__content">
+                <div class="offcanvas__logo mb-40">
+                    <a href="index.html">
+                        <img src="assets/img/logo/logo-white.png" alt="logo">
+                    </a>
+                </div>
+                <div class="offcanvas__search mb-25">
+                    <form action="#">
+                        <input type="text" placeholder="What are you searching for?">
+                        <button type="submit"><i class="far fa-search"></i></button>
+                    </form>
+                </div>
+                <div class="mobile-menu fix"></div>
+                <div class="offcanvas__action">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- offcanvas area end -->
+    <div class="body-overlay"></div>
+    <!-- offcanvas area end -->
+
+    <main>
+        <!-- page-banner-area-start -->
+        <div class="page-banner-area page-banner-height-2" data-background="assets/img/banner/page-banner-4.jpg">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="page-banner-content text-center">
+                            <h4 class="breadcrumb-title">{{ profile.username }}</h4>
+                            <div class="breadcrumb-two">
+                                <nav>
+                                    <nav class="breadcrumb-trail breadcrumbs">
+                                        <ul class="breadcrumb-menu">
+                                            <li class="breadcrumb-trail">
+                                                <a href="index.html"><span>Home</span></a>
+                                            </li>
+                                            <li class="trail-item">
+                                                <span>{{ profile.username }}</span>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- page-banner-area-end -->
+
+        <!-- account-area-start -->
+        <div class="account-area mt-70 mb-70">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="basic-login mb-50">
+                            <form method="post">{% csrf_token %}
+                            {{ form.as_div }}
+                                <button href="" class="tp-in-btn w-100">Update</button>
+                            </form>
+                            <h5>Your balance - {{ profile.balance }}$</h5>
+                            <h5>{{ profile.history_of_buy }}</h5>
+                            <h5>Your spent money - {{ profile.spent_money }}$</h5>
+                            <h5>My account is activ? - {{ profile.is_active }}</h5>
+                            <h5>My checkout - {{ profile.checkout_set.all }}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- account-area-end -->
+
+
+    </main>
+
+{% endblock %}

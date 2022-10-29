@@ -1,0 +1,739 @@
+{% extends 'shop_app/base.html' %}
+{% load static %}
+{% load poll_extras %}
+{% block cart_window %}
+
+    <div class="block-cart action">
+        <a class="icon-link" href="{% url 'cart' profile.cart_id %}">
+            <i class="flaticon-shopping-bag"></i>
+            <span class="count">{{ profile.count_product_in_cart }}</span>
+            <span class="text">
+                                    <span class="sub">Your Cart:</span>
+                                    ${{ profile.balance }} </span>
+        </a>
+
+        <div class="cart">
+
+            <div class="cart__mini">
+                <ul>
+                    <li>
+                        <div class="cart__title">
+                            <h4>Your Cart</h4>
+                            <span>({{ profile.count_product_in_cart }} Item in Cart)</span>
+                        </div>
+                    </li>
+                    {% for product, desc in cart.products_in_the_cart.all|zip:description %}
+
+                        <li>
+                            <div class="cart__item d-flex justify-content-between align-items-center">
+                                <div class="cart__inner d-flex">
+                                    <div class="cart__thumb">
+                                        <a href="product-details.html">
+                                            <img src="{% static 'assets/img/cart/20.jpg' %}"
+                                                 alt="">
+                                        </a>
+                                    </div>
+                                    <div class="cart__details">
+                                        <h6>
+                                            <a href="{% url 'product-detail' product.pk %}">{{ product.title }}
+                                                x {{ desc.quality }}</a>
+                                        </h6>
+                                        <div class="cart__price">
+                                            <span>${{ product.price|multiply:desc.quality }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="cart__del">
+                                    <a href="{% url 'cart_remove' product_id=product.pk cart_id=cart.pk %}"><i
+                                            class="fal fa-times"></i></a>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                    <li>
+                    <span class="cart__sub-total">
+                        {% if profile.coupon.discount %}
+                            Coupon - {{ profile.coupon.discount }}%
+                        {% else %}
+                            Coupon - 0%
+                        {% endif %}
+                    </span>
+                        <div class="cart__sub d-flex justify-content-between align-items-center">
+                            <h6>Total</h6>
+                            {% if profile.coupon %}
+                                {% if profile.coupon.is_active %}
+
+                                    <span class="cart__sub-total">${{ sum_product|discount_coupon:profile.coupon.discount|floatformat }}</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="cart__sub-total">${{ sum_product|floatformat }}</span>
+                            {% endif %}
+                        </div>
+                    </li>
+                    <li>
+                        <a href="{% url 'cart' profile.pk %}" class="wc-cart mb-10">View cart</a>
+                        <a href="{% url 'checkout' profile.pk profile.cart_id %}" class="wc-checkout">Checkout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block wish_list_window %}
+    {% if user.is_authenticated %}
+        <a class="icon-link" href="{% url 'wishlist' profile.wish_list_id %}">
+            <i class="flaticon-heart"></i>
+            <span class="count">{{ profile.count_product_in_wish_list }}</span>
+            <span class="text">
+                                    <span class="sub">Favorite</span>
+                                    My Wishlist </span>
+        </a>
+    {% else %}
+        <a class="icon-link" href="{% url 'login' %}">
+            <i class="flaticon-heart"></i>
+            <span class="count">0</span>
+            <span class="text">
+                                    <span class="sub">Favorite</span>
+                                    My Wishlist </span>
+        </a>
+    {% endif %}
+{% endblock %}
+
+
+{% block content %}
+    <!-- offcanvas area start -->
+    <div class="offcanvas__area">
+        <div class="offcanvas__wrapper">
+            <div class="offcanvas__close">
+                <button class="offcanvas__close-btn" id="offcanvas__close-btn">
+                    <i class="fal fa-times"></i>
+                </button>
+            </div>
+            <div class="offcanvas__content">
+                <div class="offcanvas__logo mb-40">
+                    <a href="index.html">
+                        <img src="{% static 'assets/img/logo/logo-white.png' %}" alt="logo">
+                    </a>
+                </div>
+                <div class="offcanvas__search mb-25">
+                    <form action="#">
+                        <input type="text" placeholder="What are you searching for?">
+                        <button type="submit"><i class="far fa-search"></i></button>
+                    </form>
+                </div>
+                <div class="mobile-menu fix"></div>
+                <div class="offcanvas__action">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- offcanvas area end -->
+    <div class="body-overlay"></div>
+    <!-- offcanvas area end -->
+
+
+    <main>
+        <!-- breadcrumb__area-start -->
+        <section class="breadcrumb__area box-plr-75">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xxl-12">
+                        <div class="breadcrumb__wrapper">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Shop</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- breadcrumb__area-end -->
+
+        <!-- shop-area-start -->
+        <div class="shop-area mb-20">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-3 col-lg-4">
+                        <div class="product-widget mb-30">
+                            <h5 class="pt-title">Product categories</h5>
+                            <div class="widget-category-list mt-20">
+                                <form action="#">
+                                    <div class="single-widget-category">
+                                        <input type="checkbox" id="cat-item-1" name="cat-item">
+                                        <label for="cat-item-1">Clothing &amp; Apparel <span>(12)</span></label>
+                                    </div>
+                                    <div class="single-widget-category">
+                                        <input type="checkbox" id="cat-item-2" name="cat-item">
+                                        <label for="cat-item-2">Consumer Electrics <span>(60)</span></label>
+                                    </div>
+                                    <div class="single-widget-category">
+                                        <input type="checkbox" id="cat-item-3" name="cat-item">
+                                        <label for="cat-item-3">Computers &amp; Technologies <span>(41)</span></label>
+                                    </div>
+                                    <div class="single-widget-category">
+                                        <input type="checkbox" id="cat-item-4" name="cat-item">
+                                        <label for="cat-item-4">Phones &amp; Accessories <span>(28)</span></label>
+                                    </div>
+                                    <div class="single-widget-category">
+                                        <input type="checkbox" id="cat-item-5" name="cat-item">
+                                        <label for="cat-item-5">Babies &amp; Moms <span>(21)</span></label>
+                                    </div>
+                                    <div class="single-widget-category">
+                                        <input type="checkbox" id="cat-item-7" name="cat-item">
+                                        <label for="cat-item-7">Books &amp; Office <span>(62)</span></label>
+                                    </div>
+                                    <div class="single-widget-category">
+                                        <input type="checkbox" id="cat-item-8" name="cat-item">
+                                        <label for="cat-item-8">Sport &amp; Outdoo <span>(22)</span></label>
+                                    </div>
+                                    <div class="single-widget-category">
+                                        <input type="checkbox" id="cat-item-9" name="cat-item">
+                                        <label for="cat-item-9">Chairs &amp; Stools <span>(20)</span></label>
+                                    </div>
+                                    <div class="single-widget-category">
+                                        <input type="checkbox" id="cat-item-10" name="cat-item">
+                                        <label for="cat-item-10">Furniture &amp; Acessories <span>(06)</span></label>
+                                    </div>
+                                    <div class="single-widget-category">
+                                        <input type="checkbox" id="cat-item-11" name="cat-item">
+                                        <label for="cat-item-11">Kitchen &amp; Tableware <span>(30)</span></label>
+                                    </div>
+                                    <div class="single-widget-category">
+                                        <input type="checkbox" id="cat-item-12" name="cat-item">
+                                        <label for="cat-item-12">Lighting <span>(30)</span></label>
+                                    </div>
+                                    <div class="single-widget-category">
+                                        <input type="checkbox" id="cat-item-13" name="cat-item">
+                                        <label for="cat-item-13">Armchairs &amp; Chaises <span>(30)</span></label>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="product-widget mb-30">
+                            <h5 class="pt-title">Filter By Price</h5>
+                            <div class="price__slider mt-30">
+                                <div id="slider-range"
+                                     class="ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content">
+                                    <div class="ui-slider-range ui-corner-all ui-widget-header"
+                                         style="left: 0%; width: 100%;"></div>
+                                    <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default"
+                                          style="left: 0%;"></span><span tabindex="0"
+                                                                         class="ui-slider-handle ui-corner-all ui-state-default"
+                                                                         style="left: 100%;"></span></div>
+                                <div>
+                                    <form action="#" class="s-form mt-20">
+                                        <input type="text" id="amount" readonly="">
+                                        <button type="submit" class="tp-btn-square-lg">Filter</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="product-widget mb-30">
+                            <h5 class="pt-title">Choose Rating</h5>
+                            <div class="widget-category-list mt-20">
+                                <form action="#">
+                                    <div class="single-widget-rating">
+                                        <input type="checkbox" id="star-item-1" name="star-item">
+                                        <label for="star-item-1">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <span>(54)</span>
+                                        </label>
+                                    </div>
+                                    <div class="single-widget-rating">
+                                        <input type="checkbox" id="star-item-2" name="star-item">
+                                        <label for="star-item-2">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fal fa-star"></i>
+                                            <span>(37)</span>
+                                        </label>
+                                    </div>
+                                    <div class="single-widget-rating">
+                                        <input type="checkbox" id="star-item-3" name="star-item">
+                                        <label for="star-item-3">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fal fa-star"></i>
+                                            <i class="fal fa-star"></i>
+                                            <span>(7)</span>
+                                        </label>
+                                    </div>
+                                    <div class="single-widget-rating">
+                                        <input type="checkbox" id="star-item-4" name="star-item">
+                                        <label for="star-item-4">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fal fa-star"></i>
+                                            <i class="fal fa-star"></i>
+                                            <i class="fal fa-star"></i>
+                                            <span>(5)</span>
+                                        </label>
+                                    </div>
+                                    <div class="single-widget-rating">
+                                        <input type="checkbox" id="star-item-5" name="star-item">
+                                        <label for="star-item-5">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fal fa-star"></i>
+                                            <i class="fal fa-star"></i>
+                                            <i class="fal fa-star"></i>
+                                            <i class="fal fa-star"></i>
+                                            <span>(3)</span>
+                                        </label>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="product-widget mb-30">
+                            <h5 class="pt-title">Choose Size</h5>
+                            <div class="widget-category-list mt-20">
+                                <form action="#">
+                                    <div class="single-widget-category">
+                                        <input type="checkbox" id="choose-item-1" name="choose-item">
+                                        <label for="choose-item-1">S <span>(12)</span></label>
+                                    </div>
+                                    <div class="single-widget-category">
+                                        <input type="checkbox" id="choose-item-2" name="choose-item">
+                                        <label for="choose-item-2">L <span>(60)</span></label>
+                                    </div>
+                                    <div class="single-widget-category">
+                                        <input type="checkbox" id="choose-item-3" name="choose-item">
+                                        <label for="choose-item-3">M <span>(41)</span></label>
+                                    </div>
+                                    <div class="single-widget-category">
+                                        <input type="checkbox" id="choose-item-4" name="choose-item">
+                                        <label for="choose-item-4">XXL <span>(28)</span></label>
+                                    </div>
+                                    <div class="single-widget-category">
+                                        <input type="checkbox" id="choose-item-5" name="choose-item">
+                                        <label for="choose-item-5">2XL <span>(21)</span></label>
+                                    </div>
+                                    <div class="single-widget-category">
+                                        <input type="checkbox" id="choose-item-7" name="choose-item">
+                                        <label for="choose-item-7">3XL <span>(62)</span></label>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="product-widget mb-30">
+                            <h5 class="pt-title">Choose Brand</h5>
+                            <div class="widget-category-list mt-20">
+                                <form action="#">
+                                    <div class="single-widget-category">
+                                        <input type="checkbox" id="brand-item-1" name="brand-item">
+                                        <label for="brand-item-1">CarRentals <span>(12)</span></label>
+                                    </div>
+                                    <div class="single-widget-category">
+                                        <input type="checkbox" id="brand-item-2" name="brand-item">
+                                        <label for="brand-item-2">CarVoodoo <span>(60)</span></label>
+                                    </div>
+                                    <div class="single-widget-category">
+                                        <input type="checkbox" id="brand-item-3" name="brand-item">
+                                        <label for="brand-item-3">Creative <span>(41)</span></label>
+                                    </div>
+                                    <div class="single-widget-category">
+                                        <input type="checkbox" id="brand-item-4" name="brand-item">
+                                        <label for="brand-item-4">Impact <span>(28)</span></label>
+                                    </div>
+                                    <div class="single-widget-category">
+                                        <input type="checkbox" id="brand-item-5" name="brand-item">
+                                        <label for="brand-item-5">IQVia <span>(21)</span></label>
+                                    </div>
+                                    <div class="single-widget-category">
+                                        <input type="checkbox" id="brand-item-7" name="brand-item">
+                                        <label for="brand-item-7">LeadsGreen <span>(62)</span></label>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-xl-9 col-lg-8">
+                        <div class="shop-banner mb-30">
+                            <div class="banner-image">
+                                <img class="banner-l" src="{% static 'assets/img/banner/sl-banner.jpg' %}" alt="">
+                                <img class="banner-sm" src="{% static 'assets/img/banner/sl-banner-sm.png' %}" alt="">
+                                <div class="banner-content text-center">
+                                    <p class="banner-text mb-30">Hurry Up! <br> Free Shipping All Order Over $99</p>
+                                    <a href="shop.html" class="st-btn-d b-radius">Discover now</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-lists-top">
+                            <div class="product__filter-wrap">
+                                <div class="row align-items-center">
+                                    <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6">
+                                        <div class="product__filter d-sm-flex align-items-center">
+
+                                            <div class="product__result pl-60">
+                                                <p>Showing {{ page_obj.object_list|count }} of {{ paginator.count }} |
+                                                    page {{ page_obj.number }}</p>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6">
+                                        <div class="product__filter-right d-flex align-items-center justify-content-md-end">
+                                            <div class="product__sorting product__show-no">
+                                                <select>
+                                                    <option>10</option>
+                                                    <option>20</option>
+                                                    <option>30</option>
+                                                    <option>40</option>
+                                                </select>
+                                            </div>
+                                            <div class="product__sorting product__show-position ml-20">
+                                                <select>
+                                                    <option>Latest</option>
+                                                    <option>New</option>
+                                                    <option>Up comeing</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-content" id="productGridTabContent">
+                            <div class="tab-pane fade  show active" id="FourCol" role="tabpanel"
+                                 aria-labelledby="FourCol-tab">
+                                <div class="tp-wrapper">
+                                    <div class="row g-0">
+                                        {% for product in page_obj %}
+                                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                                                <div class="product__item product__item-d">
+                                                    <div class="product__thumb fix">
+                                                        <div class="product-image w-img">
+                                                            <a href="{% url 'product-detail' product.pk %}">
+                                                                <img src="{% static 'assets/img/product/tp-2.jpg' %}"
+                                                                     alt="product">
+                                                            </a>
+                                                        </div>
+
+                                                        <div class="product-action">
+                                                            <a href="" class="icon-box icon-box-1"
+                                                               data-bs-toggle="modal"
+                                                               data-bs-target="#productModalId{{ product.pk }}">
+                                                                <i class="fal fa-eye"></i>
+                                                                <i class="fal fa-eye"></i>
+                                                            </a>
+                                                            {% if user.is_authenticated %}
+                                                                {% if product in wish_list.products_in_the_preferences.all %}
+                                                                    <a href="{% url 'wishlist_remove' product_id=product.pk wish_list_id=wish_list.pk %}"
+                                                                       class="icon-box icon-box-1">
+                                                                        <i class="fas fa-heart"></i>
+                                                                        <i class="fas fa-heart"></i>
+                                                                    </a>
+                                                                {% else %}
+                                                                    <a href="{% url 'wishlist_append' product_id=product.pk wish_list_id=wish_list.pk %}"
+                                                                       class="icon-box icon-box-1">
+                                                                        <i class="far fa-heart"></i>
+                                                                        <i class="far fa-heart"></i>
+                                                                    </a>
+                                                                {% endif %}
+                                                            {% else %}
+                                                                <a href="{% url 'login' %}" class="icon-box icon-box-1">
+                                                                    <i class="far fa-heart"></i>
+                                                                    <i class="far fa-heart"></i>
+                                                                </a>
+                                                            {% endif %}
+                                                            <a href="#" class="icon-box icon-box-1">
+                                                                <i class="fal fa-layer-group"></i>
+                                                                <i class="fal fa-layer-group"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="product__content-3">
+                                                        <h6><a href="product-details.html">{{ product.title }}</a></h6>
+                                                        <div class="review-rate">
+                                                            <div class="review-star">
+                                                                <div class="review-star">
+                                                                    {{ product.avg_rating|create_star_rating }}
+                                                                </div>
+                                                                <span class="review-count">{{ product.count_comments }} Review</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="price mb-10">
+                                                            <span>${{ product.price }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="product__add-cart-s text-center">
+                                                        {% if user.is_authenticated %}
+                                                            {% if product in cart.products_in_the_cart.all %}
+                                                                <a type="button"
+                                                                   href="{% url 'cart_remove' product_id=product.pk cart_id=cart.pk %}"
+                                                                   class="cart-btn d-flex mb-10 align-items-center justify-content-center w-100">Remove
+                                                                    from cart
+                                                                </a>
+                                                            {% else %}
+                                                                <a type="button"
+                                                                   href="{% url 'cart_append' product_id=product.pk cart_id=cart.pk %}"
+                                                                   class="cart-btn d-flex mb-10 align-items-center justify-content-center w-100">
+                                                                    Add
+                                                                    to Cart
+                                                                </a>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <a type="button"
+                                                               href="{% url 'login' %}"
+                                                               class="cart-btn d-flex mb-10 align-items-center justify-content-center w-100">Add
+                                                                to Cart
+                                                            </a>
+                                                        {% endif %}
+                                                        <button type="button"
+                                                                class="wc-checkout d-flex align-items-center justify-content-center w-100"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#productModalId{{ product.pk }}">
+                                                            Quick View
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                        <div class="tp-pagination text-center">
+                                            <div class="row">
+                                                <div class="col-xl-12">
+                                                    <div class="basic-pagination pt-30 pb-30">
+                                                        <nav>
+                                                            <ul>
+                                                                {% if page_obj.has_previous %}
+                                                                    <li>
+                                                                        <a href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+                                                                    </li>
+                                                                {% endif %}
+                                                                <li>
+                                                                    <a href="?page={{ page_obj.number }}">{{ page_obj.number }}</a>
+                                                                </li>
+                                                                {% if page_obj.has_next %}
+                                                                    <li>
+                                                                        <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+                                                                    </li>
+                                                                {% endif %}
+                                                            </ul>
+                                                        </nav>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- shop modal start -->
+                            {% if user.is_authenticated %}
+
+                                {% for product in page_obj %}
+
+                                    <div class="modal fade" id="productModalId{{ product.pk }}" tabindex="-1"
+                                         role="dialog"
+                                         aria-hidden="true">
+
+                                        <div class="modal-dialog modal-dialog-centered product__modal" role="document">
+
+                                            <div class="modal-content">
+
+                                                <div class="product__modal-wrapper p-relative">
+                                                    <div class="product__modal-close p-absolute">
+                                                        <button data-bs-dismiss="modal"><i class="fal fa-times"></i>
+                                                        </button>
+                                                    </div>
+                                                    <div class="product__modal-inner">
+                                                        <div class="row">
+                                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                                                                <div class="product__modal-box">
+
+                                                                    <div class="tab-content" id="modalTabContent">
+                                                                        <div class="tab-pane fade show active" id="nav1"
+                                                                             role="tabpanel"
+                                                                             aria-labelledby="nav1-tab">
+                                                                            <div class="product__modal-img w-img">
+                                                                                <img src="assets/img/quick-view/quick-view-1.jpg"
+                                                                                     alt="">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="tab-pane fade" id="nav2"
+                                                                             role="tabpanel"
+                                                                             aria-labelledby="nav2-tab">
+                                                                            <div class="product__modal-img w-img">
+                                                                                <img src="assets/img/quick-view/quick-view-2.jpg"
+                                                                                     alt="">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="tab-pane fade" id="nav3"
+                                                                             role="tabpanel"
+                                                                             aria-labelledby="nav3-tab">
+                                                                            <div class="product__modal-img w-img">
+                                                                                <img src="assets/img/quick-view/quick-view-3.jpg"
+                                                                                     alt="">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="tab-pane fade" id="nav4"
+                                                                             role="tabpanel"
+                                                                             aria-labelledby="nav4-tab">
+                                                                            <div class="product__modal-img w-img">
+                                                                                <img src="assets/img/quick-view/quick-view-4.jpg"
+                                                                                     alt="">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <ul class="nav nav-tabs" id="modalTab"
+                                                                        role="tablist">
+                                                                        <li class="nav-item" role="presentation">
+                                                                            <button class="nav-link active"
+                                                                                    id="nav1-tab"
+                                                                                    data-bs-toggle="tab"
+                                                                                    data-bs-target="#nav1" type="button"
+                                                                                    role="tab"
+                                                                                    aria-controls="nav1"
+                                                                                    aria-selected="true">
+                                                                                <img src="assets/img/quick-view/quick-nav-1.jpg"
+                                                                                     alt="">
+                                                                            </button>
+                                                                        </li>
+                                                                        <li class="nav-item" role="presentation">
+                                                                            <button class="nav-link" id="nav2-tab"
+                                                                                    data-bs-toggle="tab"
+                                                                                    data-bs-target="#nav2" type="button"
+                                                                                    role="tab"
+                                                                                    aria-controls="nav2"
+                                                                                    aria-selected="false">
+                                                                                <img src="assets/img/quick-view/quick-nav-2.jpg"
+                                                                                     alt="">
+                                                                            </button>
+                                                                        </li>
+                                                                        <li class="nav-item" role="presentation">
+                                                                            <button class="nav-link" id="nav3-tab"
+                                                                                    data-bs-toggle="tab"
+                                                                                    data-bs-target="#nav3" type="button"
+                                                                                    role="tab"
+                                                                                    aria-controls="nav3"
+                                                                                    aria-selected="false">
+                                                                                <img src="assets/img/quick-view/quick-nav-3.jpg"
+                                                                                     alt="">
+                                                                            </button>
+                                                                        </li>
+                                                                        <li class="nav-item" role="presentation">
+                                                                            <button class="nav-link" id="nav4-tab"
+                                                                                    data-bs-toggle="tab"
+                                                                                    data-bs-target="#nav4" type="button"
+                                                                                    role="tab"
+                                                                                    aria-controls="nav4"
+                                                                                    aria-selected="false">
+                                                                                <img src="assets/img/quick-view/quick-nav-4.jpg"
+                                                                                     alt="">
+                                                                            </button>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                                                                <div class="product__modal-content">
+                                                                    <h4>
+                                                                        <a href="product-details.html">{{ product.title }}</a>
+                                                                    </h4>
+                                                                    <div class="review-rate">
+                                                                        <div class="review-star">
+                                                                            <div class="review-star">
+                                                                                {{ product.avg_rating|create_star_rating }}
+                                                                            </div>
+                                                                            <span class="review-count">{{ product.count_comments }} Review</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="product__price">
+                                                                        <span>${{ product.price }}</span>
+                                                                    </div>
+                                                                    <div class="features-des mb-20 mt-10">
+                                                                        <span>{{ product.small_description_product }}</span>
+                                                                    </div>
+                                                                    <div class="product__stock mb-20">
+                                                                        <span class="mr-10">Availability :</span>
+                                                                        <span>{{ product.count_in_reality }}</span>
+                                                                    </div>
+                                                                    <div class="product__modal-form">
+                                                                        <form action="#">
+                                                                            <div class="pro-quan-area d-lg-flex align-items-center">
+
+                                                                                <div class="pro-cart-btn mb-25">
+                                                                                    {% if user.is_authenticated %}
+                                                                                        {% if product in wish_list.products_in_the_cart.all %}
+                                                                                            <a type="button"
+                                                                                               href="{% url 'cart_append' product_id=product.pk cart_id=cart.pk %}"
+                                                                                               class="cart-btn d-flex mb-10 align-items-center justify-content-center w-100">Add
+                                                                                                to Cart
+                                                                                            </a>
+                                                                                        {% else %}
+                                                                                            <a type="button"
+                                                                                               href="{% url 'cart_remove' product_id=product.pk cart_id=cart.pk %}"
+                                                                                               class="cart-btn d-flex mb-10 align-items-center justify-content-center w-100">
+                                                                                                Remove from cart
+                                                                                            </a>
+                                                                                        {% endif %}
+                                                                                    {% else %}
+                                                                                        <a type="button"
+                                                                                           class="cart-btn"
+                                                                                           href="{% url 'login' %}">
+                                                                                            Add
+                                                                                            to
+                                                                                            cart
+                                                                                        </a>
+                                                                                    {% endif %}
+                                                                                </div>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                    <div class="product-tag-area mt-15">
+                                                                        <div class="product_info">
+                                                                        <span class="sku_wrapper">
+                                                                            <span class="title">Tredemark:</span>
+                                                                            <span class="sku">{{ product.tredemark }}</span>
+                                                                        </span>
+                                                                            <span class="posted_in">
+                                                                        <span class="title">Categories:</span>
+                                                                        <a href="#">{{ product.category }}</a>
+                                                                        </span>
+                                                                            <span class="tagged_as">
+                                                                            <span class="title">Tags:</span>
+                                                                                {% for tag in product.tags.all %}
+                                                                                    <a href="#">{{ tag }}</a>
+                                                                                {% endfor %}
+                                                                        </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                {% endfor %}
+
+                            {% endif %}
+
+                            <!-- shop modal end -->
+
+    </main>
+
+{% endblock %}

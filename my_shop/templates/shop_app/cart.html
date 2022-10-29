@@ -1,0 +1,141 @@
+{% extends 'shop_app/base.html' %}
+{% load static %}
+{% load poll_extras %}
+{% block cart_window %}
+    <div class="block-cart action">
+        <a class="icon-link" href="{% url 'cart' object.pk %}">
+            <i class="flaticon-shopping-bag"></i>
+            <span class="count">{{ profile.count_product_in_cart }}</span>
+            <span class="text">
+                                    <span class="sub">Your Cart:</span>
+                                    ${{ user.profile.balance }} </span>
+        </a>
+    </div>
+{% endblock %}
+{% block wish_list_window %}
+    {% if user.is_authenticated %}
+        <a class="icon-link" href="{% url 'wishlist' profile.wish_list_id %}">
+            <i class="flaticon-heart"></i>
+            <span class="count">{{ profile.count_product_in_wish_list }}</span>
+            <span class="text">
+                                    <span class="sub">Favorite</span>
+                                    My Wishlist </span>
+        </a>
+    {% else %}
+        <a class="icon-link" href="{% url 'login' %}">
+            <i class="flaticon-heart"></i>
+            <span class="count">0</span>
+            <span class="text">
+                                    <span class="sub">Favorite</span>
+                                    My Wishlist </span>
+        </a>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <!-- cart-area-start -->
+    <section class="cart-area pt-120 pb-120">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <form action="{% url 'quality_cart' object.pk %}" method="post">
+                        {% csrf_token %}
+                        <div class="table-content table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="product-thumbnail">Images</th>
+                                    <th class="cart-product-name">Product</th>
+                                    <th class="product-price">Unit Price</th>
+                                    <th class="product-quantity">Quantity</th>
+                                    <th class="product-subtotal">Total</th>
+                                    <th class="product-remove">Remove</th>
+                                </tr>
+                                </thead>
+                                {% for item, desc in object.products_in_the_cart.all|zip:description %}
+                                    <tbody>
+                                    <tr>
+                                        <td class="product-thumbnail"><a href="shop-details.html"><img
+                                                src="assets/img/cart/shop-p-10.jpg" alt=""></a></td>
+                                        <td class="product-name"><a
+                                                href="{% url 'product-detail' item.pk %}">{{ item.title }}</a></td>
+                                        <td class="product-price"><span class="amount">${{ item.price }}</span></td>
+                                        <td class="product-quantity">
+                                            <div class="cart-plus-minus"><input type="text" name="quality_{{ desc.pk }}"
+                                                                                value="{{ desc.quality }}" required>
+                                                <div class="dec qtybutton">-</div>
+                                                <div class="inc qtybutton">+</div>
+                                            </div>
+                                        </td>
+                                        <td class="product-subtotal"><span
+                                                {% if profile.coupon %}
+                                                    {% if profile.coupon.is_active %}
+                                                        class="amount">
+                                                            ${{ item.total|discount_coupon:profile.coupon.discount|multiply:desc.quality|floatformat }}
+                                                        </span>
+                                                    {% endif %}
+                                                {% else %}
+                                                    class="amount">
+                                                    ${{ item.total|multiply:desc.quality|floatformat }}
+                                                    </span>
+                                                {% endif %}
+
+                                        </td>
+                                        <td class="product-remove"><a
+                                                href="{% url 'cart_remove' product_id=item.pk cart_id=object.pk %}"><i
+                                                class="fa fa-times"></i></a></td>
+                                    </tr>
+                                    </tbody>
+                                {% endfor %}
+                            </table>
+                        </div>
+                        <div class="update">
+                            <button class="tp-btn-h1" name="update_cart" type="submit">Update cart
+                            </button>
+                        </div>
+                    </form>
+                    <div class="row">
+                        <div class="col-12">
+                            <form action="{% url 'set_coupon' user.profile.pk %}" method="post">
+                                {% csrf_token %}
+                                <div class="coupon-all">
+                                    <div class="coupon">
+                                        <input id="coupon_code" class="input-text" name="coupon" value=""
+                                               placeholder="Coupon code" type="text">
+                                        <button class="tp-btn-h1" name="apply_coupon" type="submit">Apply
+                                            coupon
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row justify-content-end">
+                        <div class="col-md-5">
+                            <div class="cart-page-total">
+                                <h2>Cart totals</h2>
+                                <ul class="mb-20">
+                                    <li>Total
+                                        {% if profile.coupon %}
+                                            {% if profile.coupon.is_active %}
+                                                <span>${{ sum_product|discount_coupon:profile.coupon.discount|floatformat }}</span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span>${{ sum_product|floatformat }}</span>
+                                        {% endif %}
+
+                                    </li>
+                                </ul>
+                                <a class="tp-btn-h1" href="{% url 'checkout' user.profile.pk object.pk %}">Proceed to
+                                    checkout</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- cart-area-end -->
+{% endblock %}
