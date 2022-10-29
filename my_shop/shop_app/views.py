@@ -13,7 +13,6 @@ from my_shop.settings import EMAIL_HOST_USER
 from shop_app.forms import CommentsForm, UserRegisterForm, CheckoutForm
 from shop_app.models import Product, Profile, WishList, Cart, DescriptionProductCart, Coupon, Checkout
 
-'''Доробить купон для none, лайки, проще ссилки'''
 
 
 class CreateCommentsView(View):
@@ -254,6 +253,7 @@ class SetCoupon(View):
 class CheckoutView(View):
     @staticmethod
     def post(request, profile_id, cart_id):
+        """ Place order """
         form = CheckoutForm(request.POST)
         profile = get_object_or_404(Profile, pk=profile_id)
         cart = Cart.objects.filter(pk=cart_id).prefetch_related('products_in_the_cart').get()
@@ -261,20 +261,21 @@ class CheckoutView(View):
         sum_product = 0
         for product, desc in zip(cart.products_in_the_cart.all(), description):
             sum_product += product.price * desc.quality
+        sum_product = sum_product * profile.coupon.discount / 100
         if form.is_valid():
             form = form.save(commit=False)
             form.profile = profile
             form.price = sum_product
-            send_mail(subject=f'Checkout {form.profile.username}',
-                      message=f'Hello {form.profile.username} you buy \n '
-                              f'price {form.price}',
+            form.save()
+            checkout = Checkout.objects.last()
+            checkout.product_to_buy.add(*cart.products_in_the_cart.all())
+            send_mail(subject=f'Checkout {checkout.profile.username}',
+                      message=f'Hello {checkout.profile.username} you buy \n '
+                              f'price {checkout.price}',
                       from_email=EMAIL_HOST_USER,
                       recipient_list=[form.profile.email],
                       fail_silently=False,
                       )
-            form.save()
-            checkout = Checkout.objects.last()
-            checkout.product_to_buy.add(cart.products_in_the_cart.all())
             checkout.save()
         else:
             send_mail(subject=f'Checkout {profile.username}',
