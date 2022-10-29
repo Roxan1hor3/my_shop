@@ -1,5 +1,3 @@
-from random import randint
-
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.mail import send_mail
@@ -12,7 +10,7 @@ from django.views.generic.base import View
 from my_shop.settings import EMAIL_HOST_USER
 from shop_app.forms import CommentsForm, UserRegisterForm, CheckoutForm
 from shop_app.models import Product, Profile, WishList, Cart, DescriptionProductCart, Coupon, Checkout
-
+from shop_app.utils import get_sum_product
 
 
 class CreateCommentsView(View):
@@ -77,10 +75,7 @@ class ProductListView(ListView):
             context['wish_list'] = WishList.objects.filter(pk=context['profile'].wish_list_id).prefetch_related(
                 'products_in_the_preferences').get()
             context['description'] = get_list_or_404(DescriptionProductCart, cart_id=context['profile'].cart_id)
-            sum_product = 0
-            for product, desc in zip(context['cart'].products_in_the_cart.all(), context['description']):
-                sum_product += product.price * desc.quality
-            context['sum_product'] = sum_product
+            context['sum_product'] = get_sum_product(context['cart'].products_in_the_cart.all(), context['description'])
         return context
 
 
@@ -197,10 +192,7 @@ class CartView(DetailView):
         context = super(CartView, self).get_context_data()
         context['profile'] = self.request.user.profile
         context['description'] = get_list_or_404(DescriptionProductCart, cart_id=self.kwargs['pk'])
-        sum_product = 0
-        for product, desc in zip(self.object.products_in_the_cart.all(), context['description']):
-            sum_product += product.price * desc.quality
-        context['sum_product'] = sum_product
+        context['sum_product'] = get_sum_product(self.object.products_in_the_cart.all(), context['description'])
         return context
 
 
@@ -258,10 +250,7 @@ class CheckoutView(View):
         profile = get_object_or_404(Profile, pk=profile_id)
         cart = Cart.objects.filter(pk=cart_id).prefetch_related('products_in_the_cart').get()
         description = get_list_or_404(DescriptionProductCart, cart_id=cart_id)
-        sum_product = 0
-        for product, desc in zip(cart.products_in_the_cart.all(), description):
-            sum_product += product.price * desc.quality
-        sum_product = sum_product * profile.coupon.discount / 100
+        sum_product = get_sum_product(cart.products_in_the_cart.all(), description, profile.coupon.discount)
         if form.is_valid():
             form = form.save(commit=False)
             form.profile = profile
@@ -291,9 +280,7 @@ class CheckoutView(View):
         cart = Cart.objects.filter(pk=cart_id).prefetch_related('products_in_the_cart').get()
         profile = get_object_or_404(Profile, pk=profile_id)
         description = get_list_or_404(DescriptionProductCart, cart_id=cart_id)
-        sum_product = 0
-        for product, desc in zip(cart.products_in_the_cart.all(), description):
-            sum_product += product.price * desc.quality
+        sum_product = get_sum_product(cart.products_in_the_cart.all(), description)
         return render(request, 'shop_app/checkout.html', context={
             'cart': cart,
             'profile': profile,
