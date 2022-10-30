@@ -74,7 +74,8 @@ class ProductListView(ListView):
                 'products_in_the_cart').get()
             context['wish_list'] = WishList.objects.filter(pk=context['profile'].wish_list_id).prefetch_related(
                 'products_in_the_preferences').get()
-            context['description'] = get_list_or_404(DescriptionProductCart, cart_id=context['profile'].cart_id)
+            if context['cart'].products_in_the_cart:
+                context['description'] = get_list_or_404(DescriptionProductCart, cart_id=context['profile'].cart_id)
             context['sum_product'] = get_sum_product(context['cart'].products_in_the_cart.all(), context['description'])
         return context
 
@@ -95,6 +96,7 @@ class AccountRegisterView(FormView):
         form.wish_list = WishList.objects.create()
         """ Create cart """
         form.cart = Cart.objects.create()
+        # DescriptionProductCart.objects.create(form.cart)
         form.save()
         profile = get_object_or_404(Profile, username=username)
         """ Send mail """
@@ -131,8 +133,6 @@ class AccountUpdateView(UpdateView):
 
 
 class ActivateAccountView(View):
-    """ Activate the account and redirect to 'login' """
-
     @staticmethod
     def get(request, pk):
         profile = get_object_or_404(Profile, pk=pk)

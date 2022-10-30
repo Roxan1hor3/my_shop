@@ -48,4 +48,5 @@ admin.site.register(Tag)
 admin.site.register(Comments, CommentsAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Coupon)
+admin.site.register(DescriptionProductCart)
 

@@ -1,5 +1,3 @@
-from random import randint
-
 from django.contrib.auth.models import User
 from django.core.validators import MinLengthValidator
 from django.db import models
@@ -17,7 +15,7 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     photos = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
     category = models.ForeignKey('Category', on_delete=models.SET_DEFAULT, default='Others')
-    tredemark = models.CharField(max_length=150)
+    trademark = models.CharField(max_length=150)
     country = models.CharField(max_length=150)
     count_in_reality = models.IntegerField(blank=True)
     discount = models.IntegerField(blank=True, default=0)
@@ -62,12 +60,12 @@ class Category(models.Model):
 
 class Comments(models.Model):
     nickname = models.CharField(max_length=150, validators=[MinLengthValidator(4)])
-    description_comment = models.TextField(max_length=500, blank=True)
+    description_comment = models.TextField(max_length=500)
     created_at_comment = models.DateTimeField(auto_now_add=True)
-    profile = models.ForeignKey('Profile', on_delete=models.CASCADE, null=True, blank=True)
+    profile = models.ForeignKey('Profile', on_delete=models.CASCADE)
     rating_products = models.IntegerField(default=5)
     email = models.EmailField()
-    product = models.ForeignKey('Product', on_delete=models.CASCADE, null=True, blank=True)
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
 
     def get_absolute_url(self):
         return f'/bsm_shop/{self.pk}/'
@@ -81,15 +79,15 @@ class Comments(models.Model):
 class Profile(User):
     count_of_buy = models.IntegerField(default=0)
     phone = PhoneNumberField()
-    spent_money = models.FloatField(blank=True, null=True)
-    cart = models.OneToOneField('Cart', on_delete=models.CASCADE, blank=True, null=True)
-    wish_list = models.OneToOneField('WishList', on_delete=models.CASCADE, blank=True, null=True)
+    spent_money = models.FloatField(blank=True, default=0)
+    cart = models.OneToOneField('Cart', on_delete=models.CASCADE)
+    wish_list = models.OneToOneField('WishList', on_delete=models.CASCADE)
     balance = models.FloatField(default=0)
     history_of_buy = models.ManyToManyField('Product', blank=True)
     coupon = models.ForeignKey('Coupon', blank=True, null=True, on_delete=models.SET_NULL)
-    coupon_history = models.CharField(max_length=300, default='', blank=True, null=True)
-    count_product_in_wish_list = models.IntegerField(default=0, blank=True, null=True)
-    count_product_in_cart = models.IntegerField(default=0, blank=True, null=True)
+    coupon_history = models.CharField(max_length=300, blank=True)
+    count_product_in_wish_list = models.IntegerField(default=0, blank=True)
+    count_product_in_cart = models.IntegerField(default=0, blank=True)
 
     def __str__(self):
         return f'{super().username}'
@@ -105,8 +103,8 @@ class Cart(models.Model):
 
 class DescriptionProductCart(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quality = models.PositiveIntegerField(default=1)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True)
+    quality = models.PositiveIntegerField(default=1, blank=True)
 
 
 class WishList(models.Model):
@@ -120,7 +118,7 @@ class Checkout(models.Model):
     country = models.CharField(max_length=150)
     postcode = models.CharField(max_length=150)
     product_to_buy = models.ManyToManyField('Product', blank=True)
-    price = models.FloatField(default=0, null=True, blank=True)
+    price = models.FloatField(default=0, blank=True)
 
 
 class Compare(models.Model):
