@@ -224,9 +224,10 @@ class ChangeQuality(View):
     @staticmethod
     def post(request, cart_id):
         request_dict = request.POST.dict()
-        dpc = DescriptionProductCart.objects.filter(cart_id=cart_id)
-        for tuplekv, dpc in tuple(zip(list(request_dict.items())[1:-1], dpc)):
-            dpc.quality = tuplekv[1]
+        dpc = Cart.objects.filter(pk=cart_id).get().product_description.all()
+        """ request_dict.values())[1:-1] => take quality from request_dict """
+        for quality, dpc in zip(list(request_dict.values())[1:-1], dpc):
+            dpc.quality = quality
             dpc.save()
         return redirect(request.META.get('HTTP_REFERER'))
 

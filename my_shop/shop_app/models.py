@@ -102,7 +102,7 @@ class Cart(models.Model):
 
 
 class DescriptionProductCart(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='product_description')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True)
     quality = models.PositiveIntegerField(default=1, blank=True)
 
