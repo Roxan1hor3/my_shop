@@ -96,7 +96,7 @@ class AccountRegisterView(FormView):
         form.wish_list = WishList.objects.create()
         """ Create cart """
         form.cart = Cart.objects.create()
-        # DescriptionProductCart.objects.create(form.cart)
+        DescriptionProductCart.objects.create(form.cart)
         form.save()
         profile = get_object_or_404(Profile, username=username)
         """ Send mail """
