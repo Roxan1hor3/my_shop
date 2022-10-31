@@ -32,7 +32,7 @@ class Product(models.Model):
         return f'/bsm_shop/{self.pk}/'
 
     def __str__(self):
-        return f'{self.title}, {self.category}'
+        return f'{self.title}'
 
     class Meta:
         verbose_name = 'Product'
@@ -83,7 +83,6 @@ class Profile(User):
     cart = models.OneToOneField('Cart', on_delete=models.CASCADE)
     wish_list = models.OneToOneField('WishList', on_delete=models.CASCADE)
     balance = models.FloatField(default=0)
-    history_of_buy = models.ManyToManyField('Product', blank=True)
     coupon = models.ForeignKey('Coupon', blank=True, null=True, on_delete=models.SET_NULL)
     coupon_history = models.CharField(max_length=300, blank=True)
     count_product_in_wish_list = models.IntegerField(default=0, blank=True)
@@ -103,7 +102,8 @@ class Cart(models.Model):
 
 class DescriptionProductCart(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='product_description')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True,
+                                related_name='product_description')
     quality = models.PositiveIntegerField(default=1, blank=True)
 
 
@@ -119,6 +119,7 @@ class Checkout(models.Model):
     postcode = models.CharField(max_length=150)
     product_to_buy = models.ManyToManyField('Product', blank=True)
     price = models.FloatField(default=0, blank=True)
+    product_quality = models.TextField(blank=True, max_length=1000)
 
 
 class Compare(models.Model):

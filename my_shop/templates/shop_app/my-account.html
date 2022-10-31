@@ -15,22 +15,22 @@
 {% endblock %}
 {% block wish_list_window %}
     {% if user.is_authenticated %}
-    <a class="icon-link" href="{% url 'wishlist' profile.wish_list_id %}">
-        <i class="flaticon-heart"></i>
-        <span class="count">{{ profile.count_product_in_wish_list }}</span>
-        <span class="text">
+        <a class="icon-link" href="{% url 'wishlist' profile.wish_list_id %}">
+            <i class="flaticon-heart"></i>
+            <span class="count">{{ profile.count_product_in_wish_list }}</span>
+            <span class="text">
                                     <span class="sub">Favorite</span>
                                     My Wishlist </span>
-    </a>
-{% else %}
-    <a class="icon-link" href="{% url 'login' %}">
-        <i class="flaticon-heart"></i>
-        <span class="count">0</span>
-        <span class="text">
+        </a>
+    {% else %}
+        <a class="icon-link" href="{% url 'login' %}">
+            <i class="flaticon-heart"></i>
+            <span class="count">0</span>
+            <span class="text">
                                     <span class="sub">Favorite</span>
                                     My Wishlist </span>
-    </a>
-{% endif %}
+        </a>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -103,7 +103,7 @@
                     <div class="col-lg-6">
                         <div class="basic-login mb-50">
                             <form method="post">{% csrf_token %}
-                            {{ form.as_div }}
+                                {{ form.as_div }}
                                 <button href="" class="tp-in-btn w-100">Update</button>
                             </form>
                             <h5>Your balance - {{ profile.balance }}$</h5>
@@ -116,6 +116,67 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-lg-12">
+            {% for checkout in profile.checkout_set.all %}
+                {% for product in checkout.product_to_buy.all %}
+                    <div class="your-order mb-30 ">
+                    <h3>Your order</h3>
+                    <div class="your-order-table table-responsive">
+                    <table>
+                    <thead>
+                    <tr>
+                        <th class="product-name">Product</th>
+                        <th class="product-total">Total</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr class="cart_item">
+                        <td class="product-name">
+                            {{ product.title }} <strong class="product-quantity">
+                            × {{ product.product_description.quality }}</strong>
+                        </td>
+                        <td class="product-total">
+{#                            {% if profile.coupon %}#}
+{#                                {% if profile.coupon.is_active %}#}
+{#                                    <span class="amount">${{ product.total|discount_coupon:profile.coupon.discount|multiply:desc.quality|floatformat }}</span>#}
+{#                                {% endif %}#}
+{#                            {% else %}#}
+{#                                <span class="amount">${{ product.total|multiply:desc.quality|floatformat }}</span>#}
+{#                            {% endif %}#}
+
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <th>Coupon</th>
+                <td>{{ profile.coupon.discount }}%</td>
+            </tr>
+            <tr class="order-total">
+
+                <th>Order Total</th>
+                <td>
+                    {% if profile.coupon %}
+                        {% if profile.coupon.is_active %}
+{#                            <strong><span#}
+{#                                    class="amount">${{ sum_product|discount_coupon:profile.coupon.discount|floatformat }}</span></strong>#}
+                        {% endif %}
+                    {% else %}
+                        <strong><span
+                                class="amount">${{ sum_product|floatformat }}</span></strong>
+                    {% endif %}
+
+                </td>
+            </tr>
+            </tfoot>
+            </table>
+            </div>
+
+
         <!-- account-area-end -->
 
 

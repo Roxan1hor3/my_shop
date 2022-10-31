@@ -10,7 +10,7 @@ from django.views.generic.base import View
 from my_shop.settings import EMAIL_HOST_USER
 from shop_app.forms import CommentsForm, UserRegisterForm, CheckoutForm
 from shop_app.models import Product, Profile, WishList, Cart, DescriptionProductCart, Coupon, Checkout
-from shop_app.utils import get_sum_product
+from shop_app.utils import get_sum_product, create_product_quality
 
 
 class CreateCommentsView(View):
@@ -70,13 +70,16 @@ class ProductListView(ListView):
         if self.request.user.is_authenticated:
             context['profile'] = self.request.user.profile
             """ Cart window navbar """
-            context['cart'] = Cart.objects.filter(pk=context['profile'].cart_id).prefetch_related(
+            context['cart'] = Cart.objects.filter(profile=context['profile']).prefetch_related(
                 'products_in_the_cart').get()
-            context['wish_list'] = WishList.objects.filter(pk=context['profile'].wish_list_id).prefetch_related(
+            context['wish_list'] = WishList.objects.filter(profile=context['profile']).prefetch_related(
                 'products_in_the_preferences').get()
-            if context['cart'].products_in_the_cart:
+            context['checkouts'] = Checkout.objects.filter(profile=context['profile']).prefetch_related(
+                'product_to_buy').get()
+            if context['cart'].products_in_the_cart.all():
                 context['description'] = get_list_or_404(DescriptionProductCart, cart_id=context['profile'].cart_id)
-            context['sum_product'] = get_sum_product(context['cart'].products_in_the_cart.all(), context['description'])
+                context['sum_product'] = get_sum_product(context['cart'].products_in_the_cart.all(),
+                                                         context['description'])
         return context
 
 
@@ -191,8 +194,9 @@ class CartView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(CartView, self).get_context_data()
         context['profile'] = self.request.user.profile
-        context['description'] = get_list_or_404(DescriptionProductCart, cart_id=self.kwargs['pk'])
-        context['sum_product'] = get_sum_product(self.object.products_in_the_cart.all(), context['description'])
+        if self.get_queryset().get().products_in_the_cart.all():
+            context['description'] = get_list_or_404(DescriptionProductCart, cart_id=self.kwargs['pk'])
+            context['sum_product'] = get_sum_product(self.object.products_in_the_cart.all(), context['description'])
         return context
 
 
@@ -258,6 +262,7 @@ class CheckoutView(View):
             form.price = sum_product
             form.save()
             checkout = Checkout.objects.last()
+            checkout.product_quality = create_product_quality(cart.products_in_the_cart.all(), description)
             checkout.product_to_buy.add(*cart.products_in_the_cart.all())
             send_mail(subject=f'Checkout {checkout.profile.username}',
                       message=f'Hello {checkout.profile.username} you buy \n '
@@ -267,6 +272,8 @@ class CheckoutView(View):
                       fail_silently=False,
                       )
             checkout.save()
+            cart.products_in_the_cart.clear()
+
         else:
             send_mail(subject=f'Checkout {profile.username}',
                       message=f'Error',

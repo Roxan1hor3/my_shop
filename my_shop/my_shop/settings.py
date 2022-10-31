@@ -35,9 +35,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     "phonenumber_field",
-    'shop_app',
     "debug_toolbar",
+    'django_middleware_global_request',
+
+    'shop_app',
+
 ]
 
 MIDDLEWARE = [
@@ -48,7 +52,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
     "debug_toolbar.middleware.DebugToolbarMiddleware",
+    'django_middleware_global_request.middleware.GlobalRequestMiddleware',
+
 ]
 
 ROOT_URLCONF = 'my_shop.urls'
@@ -77,15 +84,15 @@ WSGI_APPLICATION = 'my_shop.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-      'default': {
-          'ENGINE': 'django.db.backends.postgresql',
-          'NAME': 'bsm',
-          'USER': 'bsm',
-          'PASSWORD': '13579QWERasdf',
-          'HOST': 'localhost',
-          'PORT': '5432',
-      }
- }
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'bsm',
+        'USER': 'bsm',
+        'PASSWORD': '13579QWERasdf',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -137,7 +144,6 @@ INTERNAL_IPS = [
     "127.0.0.1",
     # ...
 ]
-
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

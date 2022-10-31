@@ -36,17 +36,20 @@ class ProductAdmin(admin.ModelAdmin):
     empty_value_display = 'Nothing'
     list_select_related = ("category",)
 
+class CheckoutAdmin(admin.ModelAdmin):
+    readonly_fields = ('product_quality',)
+
+
 
 admin.site.register(Category, CategoryAdmin)
-admin.site.register(Cart)
 admin.site.register(Compare)
 admin.site.register(ContactUs, ContactUsAdmin)
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(WishList)
-admin.site.register(Checkout)
+admin.site.register(Checkout, CheckoutAdmin)
 admin.site.register(Tag)
 admin.site.register(Comments, CommentsAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Coupon)
 admin.site.register(DescriptionProductCart)
-
+admin.site.register(Cart)
