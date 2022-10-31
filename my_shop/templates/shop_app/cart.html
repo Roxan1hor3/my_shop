@@ -52,41 +52,44 @@
                                     <th class="product-remove">Remove</th>
                                 </tr>
                                 </thead>
-                                {% for item, desc in object.products_in_the_cart.all|zip:description %}
-                                    <tbody>
-                                    <tr>
-                                        <td class="product-thumbnail"><a href="shop-details.html"><img
-                                                src="assets/img/cart/shop-p-10.jpg" alt=""></a></td>
-                                        <td class="product-name"><a
-                                                href="{% url 'product-detail' item.pk %}">{{ item.title }}</a></td>
-                                        <td class="product-price"><span class="amount">${{ item.price }}</span></td>
-                                        <td class="product-quantity">
-                                            <div class="cart-plus-minus"><input type="text" name="quality_{{ desc.pk }}"
-                                                                                value="{{ desc.quality }}" required>
-                                                <div class="dec qtybutton">-</div>
-                                                <div class="inc qtybutton">+</div>
-                                            </div>
-                                        </td>
-                                        <td class="product-subtotal"><span
-                                                {% if profile.coupon %}
-                                                    {% if profile.coupon.is_active %}
+                                {% if object.products_in_the_cart.all %}
+                                    {% for item, desc in object.products_in_the_cart.all|zip:description %}
+                                        <tbody>
+                                        <tr>
+                                            <td class="product-thumbnail"><a href="shop-details.html"><img
+                                                    src="assets/img/cart/shop-p-10.jpg" alt=""></a></td>
+                                            <td class="product-name"><a
+                                                    href="{% url 'product-detail' item.pk %}">{{ item.title }}</a></td>
+                                            <td class="product-price"><span class="amount">${{ item.price }}</span></td>
+                                            <td class="product-quantity">
+                                                <div class="cart-plus-minus"><input type="text"
+                                                                                    name="quality_{{ desc.pk }}"
+                                                                                    value="{{ desc.quality }}" required>
+                                                    <div class="dec qtybutton">-</div>
+                                                    <div class="inc qtybutton">+</div>
+                                                </div>
+                                            </td>
+                                            <td class="product-subtotal"><span
+                                                    {% if profile.coupon %}
+                                                        {% if profile.coupon.is_active %}
+                                                            class="amount">
+                                                                ${{ item.total|discount_coupon:profile.coupon.discount|multiply:desc.quality|floatformat }}
+                                                            </span>
+                                                        {% endif %}
+                                                    {% else %}
                                                         class="amount">
-                                                            ${{ item.total|discount_coupon:profile.coupon.discount|multiply:desc.quality|floatformat }}
+                                                        ${{ item.total|multiply:desc.quality|floatformat }}
                                                         </span>
                                                     {% endif %}
-                                                {% else %}
-                                                    class="amount">
-                                                    ${{ item.total|multiply:desc.quality|floatformat }}
-                                                    </span>
-                                                {% endif %}
 
-                                        </td>
-                                        <td class="product-remove"><a
-                                                href="{% url 'cart_remove' product_id=item.pk cart_id=object.pk %}"><i
-                                                class="fa fa-times"></i></a></td>
-                                    </tr>
-                                    </tbody>
-                                {% endfor %}
+                                            </td>
+                                            <td class="product-remove"><a
+                                                    href="{% url 'cart_remove' product_id=item.pk cart_id=object.pk %}"><i
+                                                    class="fa fa-times"></i></a></td>
+                                        </tr>
+                                        </tbody>
+                                    {% endfor %}
+                                {% endif %}
                             </table>
                         </div>
                         <div class="update">
@@ -117,14 +120,16 @@
                                 <h2>Cart totals</h2>
                                 <ul class="mb-20">
                                     <li>Total
-                                        {% if profile.coupon %}
-                                            {% if profile.coupon.is_active %}
-                                                <span>${{ sum_product|discount_coupon:profile.coupon.discount|floatformat }}</span>
-                                            {% endif %}
-                                        {% else %}
-                                            <span>${{ sum_product|floatformat }}</span>
-                                        {% endif %}
+                                        {% if object.products_in_the_cart.all %}
 
+                                            {% if profile.coupon %}
+                                                {% if profile.coupon.is_active %}
+                                                    <span>${{ sum_product|discount_coupon:profile.coupon.discount|floatformat }}</span>
+                                                {% endif %}
+                                            {% else %}
+                                                <span>${{ sum_product|floatformat }}</span>
+                                            {% endif %}
+                                        {% endif %}
                                     </li>
                                 </ul>
                                 <a class="tp-btn-h1" href="{% url 'checkout' user.profile.pk object.pk %}">Proceed to

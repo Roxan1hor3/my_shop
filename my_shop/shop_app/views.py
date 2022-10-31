@@ -10,7 +10,7 @@ from django.views.generic.base import View
 from my_shop.settings import EMAIL_HOST_USER
 from shop_app.forms import CommentsForm, UserRegisterForm, CheckoutForm
 from shop_app.models import Product, Profile, WishList, Cart, DescriptionProductCart, Coupon, Checkout
-from shop_app.utils import get_sum_product, create_product_quality
+from shop_app.utils import get_sum_product, create_product_quality, send_email_checkout, send_email_error
 
 
 class CreateCommentsView(View):
@@ -261,26 +261,22 @@ class CheckoutView(View):
             form.profile = profile
             form.price = sum_product
             form.save()
+            """ add product to checkout """
             checkout = Checkout.objects.last()
             checkout.product_quality = create_product_quality(cart.products_in_the_cart.all(), description)
             checkout.product_to_buy.add(*cart.products_in_the_cart.all())
-            send_mail(subject=f'Checkout {checkout.profile.username}',
-                      message=f'Hello {checkout.profile.username} you buy \n '
-                              f'price {checkout.price}',
-                      from_email=EMAIL_HOST_USER,
-                      recipient_list=[form.profile.email],
-                      fail_silently=False,
-                      )
+            send_email_checkout(checkout, profile)
             checkout.save()
+            """ clear counts of product for navbar """
             cart.products_in_the_cart.clear()
-
+            wish_list = WishList.objects.filter(pk=profile.wish_list_id).prefetch_related(
+                'products_in_the_preferences').get()
+            wish_list.products_in_the_preferences.clear()
+            profile.count_product_in_wish_list = 0
+            profile.count_product_in_cart = 0
+            profile.save()
         else:
-            send_mail(subject=f'Checkout {profile.username}',
-                      message=f'Error',
-                      from_email=EMAIL_HOST_USER,
-                      recipient_list=[profile.email],
-                      fail_silently=False,
-                      )
+            send_email_error(profile)
         return redirect(f'/bsm_shop/cart/{cart_id}')
 
     @staticmethod
