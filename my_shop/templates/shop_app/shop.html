@@ -22,36 +22,36 @@
                             <span>({{ profile.count_product_in_cart }} Item in Cart)</span>
                         </div>
                     </li>
-                {% if description %}
-                    {% for product, desc in cart.products_in_the_cart.all|zip:description %}
+                    {% if description %}
+                        {% for product, desc in cart.products_in_the_cart.all|zip:description %}
 
-                        <li>
-                            <div class="cart__item d-flex justify-content-between align-items-center">
-                                <div class="cart__inner d-flex">
-                                    <div class="cart__thumb">
-                                        <a href="product-details.html">
-                                            <img src="{% static 'assets/img/cart/20.jpg' %}"
-                                                 alt="">
-                                        </a>
-                                    </div>
-                                    <div class="cart__details">
-                                        <h6>
-                                            <a href="{% url 'product-detail' product.pk %}">{{ product.title }}
-                                                x {{ desc.quality }}</a>
-                                        </h6>
-                                        <div class="cart__price">
-                                            <span>${{ product.price|multiply:desc.quality }}</span>
+                            <li>
+                                <div class="cart__item d-flex justify-content-between align-items-center">
+                                    <div class="cart__inner d-flex">
+                                        <div class="cart__thumb">
+                                            <a href="product-details.html">
+                                                <img src="{% static 'assets/img/cart/20.jpg' %}"
+                                                     alt="">
+                                            </a>
+                                        </div>
+                                        <div class="cart__details">
+                                            <h6>
+                                                <a href="{% url 'product-detail' product.pk %}">{{ product.title }}
+                                                    x {{ desc.quality }}</a>
+                                            </h6>
+                                            <div class="cart__price">
+                                                <span>${{ product.price|multiply:desc.quality }}</span>
+                                            </div>
                                         </div>
                                     </div>
+                                    <div class="cart__del">
+                                        <a href="{% url 'cart_remove' product_id=product.pk cart_id=cart.pk %}"><i
+                                                class="fal fa-times"></i></a>
+                                    </div>
                                 </div>
-                                <div class="cart__del">
-                                    <a href="{% url 'cart_remove' product_id=product.pk cart_id=cart.pk %}"><i
-                                            class="fal fa-times"></i></a>
-                                </div>
-                            </div>
-                        </li>
-                    {% endfor %}
-                    <li>
+                            </li>
+                        {% endfor %}
+                        <li>
                     <span class="cart__sub-total">
                         {% if profile.coupon.discount %}
                             Coupon - {{ profile.coupon.discount }}%
@@ -59,25 +59,25 @@
                             Coupon - 0%
                         {% endif %}
                     </span>
-                        <div class="cart__sub d-flex justify-content-between align-items-center">
-                            <h6>Total</h6>
-                            {% if profile.coupon %}
-                                {% if profile.coupon.is_active %}
+                            <div class="cart__sub d-flex justify-content-between align-items-center">
+                                <h6>Total</h6>
+                                {% if profile.coupon %}
+                                    {% if profile.coupon.is_active %}
 
-                                    <span class="cart__sub-total">${{ sum_product|discount_coupon:profile.coupon.discount|floatformat }}</span>
+                                        <span class="cart__sub-total">${{ sum_product|discount_coupon:profile.coupon.discount|floatformat }}</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="cart__sub-total">${{ sum_product|floatformat }}</span>
                                 {% endif %}
-                            {% else %}
-                                <span class="cart__sub-total">${{ sum_product|floatformat }}</span>
-                            {% endif %}
+                            </div>
+                        </li>
+                        <li>
+                            <a href="{% url 'cart' profile.pk %}" class="wc-cart mb-10">View cart</a>
+                            <a href="{% url 'checkout' profile.pk profile.cart_id %}" class="wc-checkout">Checkout</a>
+                        </li>
+                        </ul>
                         </div>
-                    </li>
-                    <li>
-                        <a href="{% url 'cart' profile.pk %}" class="wc-cart mb-10">View cart</a>
-                        <a href="{% url 'checkout' profile.pk profile.cart_id %}" class="wc-checkout">Checkout</a>
-                    </li>
-                </ul>
-            </div>
-        {% endif %}
+                    {% endif %}
         </div>
     </div>
 {% endblock %}
@@ -160,205 +160,102 @@
             <div class="container">
                 <div class="row">
                     <div class="col-xl-3 col-lg-4">
-                        <div class="product-widget mb-30">
-                            <h5 class="pt-title">Product categories</h5>
-                            <div class="widget-category-list mt-20">
-                                <form action="#">
-                                    <div class="single-widget-category">
-                                        <input type="checkbox" id="cat-item-1" name="cat-item">
-                                        <label for="cat-item-1">Clothing &amp; Apparel <span>(12)</span></label>
-                                    </div>
-                                    <div class="single-widget-category">
-                                        <input type="checkbox" id="cat-item-2" name="cat-item">
-                                        <label for="cat-item-2">Consumer Electrics <span>(60)</span></label>
-                                    </div>
-                                    <div class="single-widget-category">
-                                        <input type="checkbox" id="cat-item-3" name="cat-item">
-                                        <label for="cat-item-3">Computers &amp; Technologies <span>(41)</span></label>
-                                    </div>
-                                    <div class="single-widget-category">
-                                        <input type="checkbox" id="cat-item-4" name="cat-item">
-                                        <label for="cat-item-4">Phones &amp; Accessories <span>(28)</span></label>
-                                    </div>
-                                    <div class="single-widget-category">
-                                        <input type="checkbox" id="cat-item-5" name="cat-item">
-                                        <label for="cat-item-5">Babies &amp; Moms <span>(21)</span></label>
-                                    </div>
-                                    <div class="single-widget-category">
-                                        <input type="checkbox" id="cat-item-7" name="cat-item">
-                                        <label for="cat-item-7">Books &amp; Office <span>(62)</span></label>
-                                    </div>
-                                    <div class="single-widget-category">
-                                        <input type="checkbox" id="cat-item-8" name="cat-item">
-                                        <label for="cat-item-8">Sport &amp; Outdoo <span>(22)</span></label>
-                                    </div>
-                                    <div class="single-widget-category">
-                                        <input type="checkbox" id="cat-item-9" name="cat-item">
-                                        <label for="cat-item-9">Chairs &amp; Stools <span>(20)</span></label>
-                                    </div>
-                                    <div class="single-widget-category">
-                                        <input type="checkbox" id="cat-item-10" name="cat-item">
-                                        <label for="cat-item-10">Furniture &amp; Acessories <span>(06)</span></label>
-                                    </div>
-                                    <div class="single-widget-category">
-                                        <input type="checkbox" id="cat-item-11" name="cat-item">
-                                        <label for="cat-item-11">Kitchen &amp; Tableware <span>(30)</span></label>
-                                    </div>
-                                    <div class="single-widget-category">
-                                        <input type="checkbox" id="cat-item-12" name="cat-item">
-                                        <label for="cat-item-12">Lighting <span>(30)</span></label>
-                                    </div>
-                                    <div class="single-widget-category">
-                                        <input type="checkbox" id="cat-item-13" name="cat-item">
-                                        <label for="cat-item-13">Armchairs &amp; Chaises <span>(30)</span></label>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="product-widget mb-30">
-                            <h5 class="pt-title">Filter By Price</h5>
-                            <div class="price__slider mt-30">
-                                <div id="slider-range"
-                                     class="ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content">
-                                    <div class="ui-slider-range ui-corner-all ui-widget-header"
-                                         style="left: 0%; width: 100%;"></div>
-                                    <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default"
-                                          style="left: 0%;"></span><span tabindex="0"
-                                                                         class="ui-slider-handle ui-corner-all ui-state-default"
-                                                                         style="left: 100%;"></span></div>
-                                <div>
-                                    <form action="#" class="s-form mt-20">
-                                        <input type="text" id="amount" readonly="">
-                                        <button type="submit" class="tp-btn-square-lg">Filter</button>
-                                    </form>
+                        <form action="{% url 'filter-product' %}" method="get">
+                            <div class="product-widget mb-30">
+                                <button type="submit">Filter</button>
+                                <h5 class="pt-title">Product categories</h5>
+                                <div class="widget-category-list mt-20">
+
+                                    {% for category in categores %}
+                                        <div class="single-widget-category">
+                                            <input type="checkbox" id="cat-item-{{ category.pk }}" name="category"
+                                                   value="{{ category.pk }}">
+                                            <label for="cat-item-{{ category.pk }}">{{ category.title }} </label>
+                                        </div>
+                                    {% endfor %}
                                 </div>
                             </div>
-                        </div>
+                            <div class="product-widget mb-30">
+                                <h5 class="pt-title">Filter By Price</h5>
+                                <div class="price__slider mt-30">
+                                    <h6>Price letgh then</h6>
+                                    <input type="text" name="price__lte" value="99999999">
+                                    <h6> Price great then</h6>
+                                    <input type="text" name="price__gte" value="0">
+                                </div>
+                            </div>
 
-                        <div class="product-widget mb-30">
-                            <h5 class="pt-title">Choose Rating</h5>
-                            <div class="widget-category-list mt-20">
-                                <form action="#">
+                            <div class="product-widget mb-30">
+                                <h5 class="pt-title">Choose Rating</h5>
+                                <div class="widget-category-list mt-20">
                                     <div class="single-widget-rating">
-                                        <input type="checkbox" id="star-item-1" name="star-item">
+                                        <input type="checkbox" id="star-item-1" name="star" value="5">
                                         <label for="star-item-1">
                                             <i class="fas fa-star"></i>
                                             <i class="fas fa-star"></i>
                                             <i class="fas fa-star"></i>
                                             <i class="fas fa-star"></i>
                                             <i class="fas fa-star"></i>
-                                            <span>(54)</span>
                                         </label>
                                     </div>
                                     <div class="single-widget-rating">
-                                        <input type="checkbox" id="star-item-2" name="star-item">
+                                        <input type="checkbox" id="star-item-2" name="star" value="4">
                                         <label for="star-item-2">
                                             <i class="fas fa-star"></i>
                                             <i class="fas fa-star"></i>
                                             <i class="fas fa-star"></i>
                                             <i class="fas fa-star"></i>
                                             <i class="fal fa-star"></i>
-                                            <span>(37)</span>
                                         </label>
                                     </div>
                                     <div class="single-widget-rating">
-                                        <input type="checkbox" id="star-item-3" name="star-item">
+                                        <input type="checkbox" id="star-item-3" name="star" value="3">
                                         <label for="star-item-3">
                                             <i class="fas fa-star"></i>
                                             <i class="fas fa-star"></i>
                                             <i class="fas fa-star"></i>
                                             <i class="fal fa-star"></i>
                                             <i class="fal fa-star"></i>
-                                            <span>(7)</span>
                                         </label>
                                     </div>
                                     <div class="single-widget-rating">
-                                        <input type="checkbox" id="star-item-4" name="star-item">
+                                        <input type="checkbox" id="star-item-4" name="star" value="2">
                                         <label for="star-item-4">
                                             <i class="fas fa-star"></i>
                                             <i class="fas fa-star"></i>
                                             <i class="fal fa-star"></i>
                                             <i class="fal fa-star"></i>
                                             <i class="fal fa-star"></i>
-                                            <span>(5)</span>
                                         </label>
                                     </div>
                                     <div class="single-widget-rating">
-                                        <input type="checkbox" id="star-item-5" name="star-item">
+                                        <input type="checkbox" id="star-item-5" name="star" value="1">
                                         <label for="star-item-5">
                                             <i class="fas fa-star"></i>
                                             <i class="fal fa-star"></i>
                                             <i class="fal fa-star"></i>
                                             <i class="fal fa-star"></i>
                                             <i class="fal fa-star"></i>
-                                            <span>(3)</span>
                                         </label>
                                     </div>
-                                </form>
+                                </div>
                             </div>
-                        </div>
-                        <div class="product-widget mb-30">
-                            <h5 class="pt-title">Choose Size</h5>
-                            <div class="widget-category-list mt-20">
-                                <form action="#">
-                                    <div class="single-widget-category">
-                                        <input type="checkbox" id="choose-item-1" name="choose-item">
-                                        <label for="choose-item-1">S <span>(12)</span></label>
-                                    </div>
-                                    <div class="single-widget-category">
-                                        <input type="checkbox" id="choose-item-2" name="choose-item">
-                                        <label for="choose-item-2">L <span>(60)</span></label>
-                                    </div>
-                                    <div class="single-widget-category">
-                                        <input type="checkbox" id="choose-item-3" name="choose-item">
-                                        <label for="choose-item-3">M <span>(41)</span></label>
-                                    </div>
-                                    <div class="single-widget-category">
-                                        <input type="checkbox" id="choose-item-4" name="choose-item">
-                                        <label for="choose-item-4">XXL <span>(28)</span></label>
-                                    </div>
-                                    <div class="single-widget-category">
-                                        <input type="checkbox" id="choose-item-5" name="choose-item">
-                                        <label for="choose-item-5">2XL <span>(21)</span></label>
-                                    </div>
-                                    <div class="single-widget-category">
-                                        <input type="checkbox" id="choose-item-7" name="choose-item">
-                                        <label for="choose-item-7">3XL <span>(62)</span></label>
-                                    </div>
-                                </form>
+
+                            <div class="product-widget mb-30">
+                                <h5 class="pt-title">Choose Tag</h5>
+                                <div class="widget-category-list mt-20">
+                                    {% for tag in tags %}
+                                        <div class="single-widget-category">
+                                            <input type="checkbox" id="choose-item-{{ tag.pk }}" name="tags"
+                                                   value="{{ tag.pk }}">
+                                            <label for="choose-item-{{ tag.pk }}">{{ tag.title }} </label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
                             </div>
-                        </div>
-                        <div class="product-widget mb-30">
-                            <h5 class="pt-title">Choose Brand</h5>
-                            <div class="widget-category-list mt-20">
-                                <form action="#">
-                                    <div class="single-widget-category">
-                                        <input type="checkbox" id="brand-item-1" name="brand-item">
-                                        <label for="brand-item-1">CarRentals <span>(12)</span></label>
-                                    </div>
-                                    <div class="single-widget-category">
-                                        <input type="checkbox" id="brand-item-2" name="brand-item">
-                                        <label for="brand-item-2">CarVoodoo <span>(60)</span></label>
-                                    </div>
-                                    <div class="single-widget-category">
-                                        <input type="checkbox" id="brand-item-3" name="brand-item">
-                                        <label for="brand-item-3">Creative <span>(41)</span></label>
-                                    </div>
-                                    <div class="single-widget-category">
-                                        <input type="checkbox" id="brand-item-4" name="brand-item">
-                                        <label for="brand-item-4">Impact <span>(28)</span></label>
-                                    </div>
-                                    <div class="single-widget-category">
-                                        <input type="checkbox" id="brand-item-5" name="brand-item">
-                                        <label for="brand-item-5">IQVia <span>(21)</span></label>
-                                    </div>
-                                    <div class="single-widget-category">
-                                        <input type="checkbox" id="brand-item-7" name="brand-item">
-                                        <label for="brand-item-7">LeadsGreen <span>(62)</span></label>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+                        </form>
+
+
 
                     </div>
                     <div class="col-xl-9 col-lg-8">

@@ -121,7 +121,6 @@
                                 <ul class="mb-20">
                                     <li>Total
                                         {% if object.products_in_the_cart.all %}
-
                                             {% if profile.coupon %}
                                                 {% if profile.coupon.is_active %}
                                                     <span>${{ sum_product|discount_coupon:profile.coupon.discount|floatformat }}</span>

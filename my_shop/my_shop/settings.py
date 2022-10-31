@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "phonenumber_field",
     "debug_toolbar",
     'django_middleware_global_request',
+    'django_filters',
 
     'shop_app',
 

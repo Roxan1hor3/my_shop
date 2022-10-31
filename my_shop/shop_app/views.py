@@ -4,13 +4,13 @@ from django.core.mail import send_mail
 from django.db.models import Avg
 from django.shortcuts import redirect, get_object_or_404, render, get_list_or_404
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, ListView, FormView, UpdateView
+from django.views.generic import DetailView, FormView, UpdateView, ListView
 from django.views.generic.base import View
 
 from my_shop.settings import EMAIL_HOST_USER
 from shop_app.forms import CommentsForm, UserRegisterForm, CheckoutForm
-from shop_app.models import Product, Profile, WishList, Cart, DescriptionProductCart, Coupon, Checkout
-from shop_app.utils import get_sum_product, create_product_quality, send_email_checkout, send_email_error
+from shop_app.models import Product, Profile, WishList, Cart, DescriptionProductCart, Coupon, Checkout, Category, Tag
+from shop_app.utils import get_sum_product, create_product_quality, send_email_checkout, send_email_error, filter_func
 
 
 class CreateCommentsView(View):
@@ -67,6 +67,7 @@ class ProductListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         """ For hearts that add or remove products from the wishlist """
+        context['categores'] = Category.objects.all()
         if self.request.user.is_authenticated:
             context['profile'] = self.request.user.profile
             """ Cart window navbar """
@@ -76,11 +77,30 @@ class ProductListView(ListView):
                 'products_in_the_preferences').get()
             context['checkouts'] = Checkout.objects.filter(profile=context['profile']).prefetch_related(
                 'product_to_buy').get()
+            context['tags'] = Tag.objects.all()
             if context['cart'].products_in_the_cart.all():
                 context['description'] = get_list_or_404(DescriptionProductCart, cart_id=context['profile'].cart_id)
                 context['sum_product'] = get_sum_product(context['cart'].products_in_the_cart.all(),
                                                          context['description'])
         return context
+
+
+class FilterProductView(ProductListView):
+    def get_queryset(self):
+        category_pk = self.request.GET.getlist('category')
+        price__gte = self.request.GET.get('price__gte')
+        price__lte = self.request.GET.get('price__lte')
+        star = self.request.GET.getlist('star')
+        tags = self.request.GET.getlist('tags')
+        print(star)
+        try:
+            queryset = filter_func(category_pk, price__gte, price__lte, star, tags)
+        except ValueError:
+            price__gte = 0
+            price__lte = 99999999
+            queryset = filter_func(category_pk, price__gte, price__lte, star, tags)
+
+        return queryset
 
 
 class AccountRegisterView(FormView):

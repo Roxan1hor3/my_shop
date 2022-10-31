@@ -3,6 +3,8 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
+    path('filter', FilterProductView.as_view(), name='filter-product'),
+
     path('<int:pk>/', ProductDetailView.as_view(), name='product-detail'),
     path('', ProductListView.as_view(), name='bsm-shop'),
 
@@ -27,4 +29,5 @@ urlpatterns = [
     path('cart/set_coupon/<int:profile_id>', SetCoupon.as_view(), name='set_coupon'),
 
     path('checkout/<int:profile_id>/<int:cart_id>', CheckoutView.as_view(), name='checkout'),
+
 ]

@@ -1,7 +1,8 @@
 from django.core.mail import send_mail
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Q
 
 from my_shop.settings import EMAIL_HOST_USER
+from shop_app.models import Product
 
 
 def get_sum_product(product: QuerySet, description: QuerySet, coupon: int = 0):
@@ -36,3 +37,15 @@ def send_email_error(profile):
               recipient_list=[profile.email],
               fail_silently=False,
               )
+
+
+def filter_func(category_pk, price__gte, price__lte, star, tags):
+    queryset = Product.objects.filter(Q(price__gte=price__gte) & Q(price__lte=price__lte)).select_related(
+        'category').prefetch_related('tags')
+    if category_pk:
+        queryset = queryset.filter(category__in=category_pk)
+    if star:
+        queryset = queryset.filter(avg_rating__in=star)
+    if tags:
+        queryset = queryset.filter(tags__in=tags)
+    return queryset
