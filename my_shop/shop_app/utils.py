@@ -43,9 +43,9 @@ def filter_func(category_pk, price__gte, price__lte, star, tags):
     queryset = Product.objects.filter(Q(price__gte=price__gte) & Q(price__lte=price__lte)).select_related(
         'category').prefetch_related('tags')
     if category_pk:
-        queryset = queryset.filter(category__in=category_pk)
+        queryset = queryset.filter(category__in=category_pk).distinct()
     if star:
-        queryset = queryset.filter(avg_rating__in=star)
+        queryset = queryset.filter(avg_rating__in=star).distinct()
     if tags:
-        queryset = queryset.filter(tags__in=tags)
+        queryset = queryset.filter(tags__in=tags).distinct()
     return queryset

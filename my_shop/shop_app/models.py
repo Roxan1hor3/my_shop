@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.core.validators import MinLengthValidator
+from django.core.validators import MinLengthValidator, RegexValidator
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -78,7 +78,10 @@ class Comments(models.Model):
 
 class Profile(User):
     count_of_buy = models.IntegerField(default=0)
-    phone = PhoneNumberField()
+    phone = PhoneNumberField(validators=[RegexValidator(
+        regex=r''
+
+    )])
     spent_money = models.FloatField(blank=True, default=0)
     cart = models.OneToOneField('Cart', on_delete=models.CASCADE)
     wish_list = models.OneToOneField('WishList', on_delete=models.CASCADE)
