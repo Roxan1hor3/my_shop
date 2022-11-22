@@ -1,4 +1,5 @@
-��#� �m�y�_�s�h�o�p�
+my_shop
+
 launch the project
 
 docker-compose up --build
