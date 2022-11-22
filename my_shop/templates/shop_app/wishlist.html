@@ -84,7 +84,7 @@
                                     {% for product in object.products_in_the_preferences.all %}
                                         <tr>
                                             <td class="product-thumbnail"><a href="shop-details.html"><img
-                                                    src="assets/img/cart/shop-p-10.jpg" alt=""></a></td>
+                                                    src={{ product.photos.url}} alt=""></a></td>
                                             <td class="product-name"><a
                                                     href="{% url 'product-detail' product.pk %}">{{ product.title }}</a></td>
                                             <td class="product-price"><span class="amount">${{ product.price }}</span></td>

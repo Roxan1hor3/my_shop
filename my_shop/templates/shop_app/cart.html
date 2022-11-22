@@ -56,8 +56,8 @@
                                     {% for item, desc in object.products_in_the_cart.all|zip:description %}
                                         <tbody>
                                         <tr>
-                                            <td class="product-thumbnail"><a href="shop-details.html"><img
-                                                    src="assets/img/cart/shop-p-10.jpg" alt=""></a></td>
+                                            <td class="product-thumbnail"><a href="{% url 'product-detail' item.pk%} "><img
+                                                    src={{ item.photos.url }} alt=""></a></td>
                                             <td class="product-name"><a
                                                     href="{% url 'product-detail' item.pk %}">{{ item.title }}</a></td>
                                             <td class="product-price"><span class="amount">${{ item.price }}</span></td>

@@ -1,5 +1,4 @@
 from django.contrib.auth.models import User
-from django.core.validators import MinLengthValidator, RegexValidator
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -59,13 +58,13 @@ class Category(models.Model):
 
 
 class Comments(models.Model):
-    nickname = models.CharField(max_length=150, validators=[MinLengthValidator(4)])
+    nickname = models.CharField(max_length=150)
     description_comment = models.TextField(max_length=500)
     created_at_comment = models.DateTimeField(auto_now_add=True)
-    profile = models.ForeignKey('Profile', on_delete=models.CASCADE)
+    profile = models.ForeignKey('Profile', on_delete=models.CASCADE, null=True, blank=True)
     rating_products = models.IntegerField(default=5)
     email = models.EmailField()
-    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    product = models.ForeignKey('Product', on_delete=models.CASCADE, null=True, blank=True)
 
     def get_absolute_url(self):
         return f'/bsm_shop/{self.pk}/'
@@ -78,10 +77,7 @@ class Comments(models.Model):
 
 class Profile(User):
     count_of_buy = models.IntegerField(default=0)
-    phone = PhoneNumberField(validators=[RegexValidator(
-        regex=r''
-
-    )])
+    phone = PhoneNumberField()
     spent_money = models.FloatField(blank=True, default=0)
     cart = models.OneToOneField('Cart', on_delete=models.CASCADE)
     wish_list = models.OneToOneField('WishList', on_delete=models.CASCADE)
@@ -107,7 +103,7 @@ class DescriptionProductCart(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='product_description')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True,
                                 related_name='product_description')
-    quality = models.PositiveIntegerField(default=1, blank=True)
+    quality = models.PositiveIntegerField(default=1, blank=True, null=True)
 
 
 class WishList(models.Model):

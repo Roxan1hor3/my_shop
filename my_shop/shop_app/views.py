@@ -19,7 +19,9 @@ class CreateCommentsView(View):
         """ Save a new comment """
         form = CommentsForm(request.POST)
         product = get_object_or_404(Product, pk=pk)
+        print(form.data)
         if form.is_valid():
+            print("True")
             form = form.save(commit=False)
             form.product = product
             form.save()
@@ -50,6 +52,7 @@ class ProductDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         """ Take comments """
         context['comments'] = get_object_or_404(super().get_queryset(), pk=self.kwargs["pk"]).comments_set.all()
+        print(context['comments'])
         if self.request.user.is_authenticated:
             context["profile"] = self.request.user.profile
         return context
@@ -76,7 +79,7 @@ class ProductListView(ListView):
             context['wish_list'] = WishList.objects.filter(profile=context['profile']).prefetch_related(
                 'products_in_the_preferences').get()
             context['checkouts'] = Checkout.objects.filter(profile=context['profile']).prefetch_related(
-                'product_to_buy').get()
+                'product_to_buy')
             context['tags'] = Tag.objects.all()
             if context['cart'].products_in_the_cart.all():
                 context['description'] = get_list_or_404(DescriptionProductCart, cart_id=context['profile'].cart_id)
@@ -119,7 +122,8 @@ class AccountRegisterView(FormView):
         form.wish_list = WishList.objects.create()
         """ Create cart """
         form.cart = Cart.objects.create()
-        DescriptionProductCart.objects.create(form.cart)
+        print(form.cart)
+        DescriptionProductCart.objects.create(cart=form.cart)
         form.save()
         profile = get_object_or_404(Profile, username=username)
         """ Send mail """
