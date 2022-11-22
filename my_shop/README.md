@@ -1,4 +1,7 @@
 ��#� �m�y�_�s�h�o�p�
+launch the project
+
+docker-compose up --build
 
 to launch the project, you need to make migrations
 
