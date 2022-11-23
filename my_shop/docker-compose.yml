@@ -5,11 +5,11 @@ services:
     build: ./
     container_name: my_shop_web
     restart: always
-    command: gunicorn my_shop.wsgi:application --bind 0.0.0.0:8000
+    command: bash entrypoint.sh
     volumes:
       - .:/usr/src/app
-      - static_volume:/home/app/web/static
-      - photos_volume:/home/app/web/photos
+      - ./static:/usr/src/app/static
+      - ./photos:/usr/src/app/photos
     ports:
       - 8000:8000
     env_file:
@@ -34,12 +34,10 @@ services:
     ports:
       - 80:80
     volumes:
-      - static_volume:/home/app/web/static
-      - photos_volume:/home/app/web/photos
+      - ./static:/static
+      - ./photos:/photos
     depends_on:
       - web
 
 volumes:
   postgres_data:
-  static_volume:
-  photos_volume:

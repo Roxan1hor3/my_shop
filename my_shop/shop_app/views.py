@@ -315,3 +315,8 @@ class CheckoutView(View):
             'description': description,
             'sum_product': sum_product,
         })
+
+
+
+
+
