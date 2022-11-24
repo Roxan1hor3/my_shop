@@ -5,10 +5,12 @@ from my_shop.settings import EMAIL_HOST_USER
 from shop_app.models import Product
 
 
-def get_sum_product(product: QuerySet, description: QuerySet, coupon: int = 0):
+def get_sum_product(product: QuerySet, description: QuerySet, coupon: int):
     sum_product = 0
-    for product, desc in zip(product, description):
-        sum_product += product.price * desc.quality
+    if coupon is None:
+        coupon = 0
+    for product, description in zip(product, description):
+        sum_product += product.price * description.quality
     sum_product = sum_product * (100 - coupon) / 100
     return sum_product
 

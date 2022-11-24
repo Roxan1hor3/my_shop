@@ -41,6 +41,8 @@
                         <h5>Register</h5>
                         <form method="post">{% csrf_token %}
                             {{ form.as_div }}
+                            <h2>After registration you need to verify your account</h2>
+                            <h2>You will receive a letter in the mail</h2>
                             <button href="" class="tp-in-btn w-100">Register</button>
                         </form>
                     </div>

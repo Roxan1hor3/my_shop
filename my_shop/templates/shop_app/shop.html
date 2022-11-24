@@ -30,7 +30,7 @@
                                     <div class="cart__inner d-flex">
                                         <div class="cart__thumb">
                                             <a href="product-details.html">
-                                                <img src={{ product.photos.url }}
+                                                <img src={{ product.photos.url }} height="500" width="500"
                                                      alt="">
                                             </a>
                                         </div>
@@ -313,8 +313,7 @@
                                                     <div class="product__thumb fix">
                                                         <div class="product-image w-img">
                                                             <a href="{% url 'product-detail' product.pk %}">
-                                                                <img src={{ product.photos.url }}
-                                                                             class="img-fluid" alt="" height="196" width="396">
+                                                                <img src={{ product.photos.url }} class="img-fluid" alt="" height="500" width="500">
                                                             </a>
                                                         </div>
 

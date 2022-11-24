@@ -279,7 +279,9 @@ class CheckoutView(View):
         profile = get_object_or_404(Profile, pk=profile_id)
         cart = Cart.objects.filter(pk=cart_id).prefetch_related('products_in_the_cart').get()
         description = get_list_or_404(DescriptionProductCart, cart_id=cart_id)
+
         sum_product = get_sum_product(cart.products_in_the_cart.all(), description, profile.coupon.discount)
+
         if form.is_valid():
             form = form.save(commit=False)
             form.profile = profile
