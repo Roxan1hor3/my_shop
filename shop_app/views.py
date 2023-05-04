@@ -35,9 +35,7 @@ class CreateCommentsView(View):
         """Save a new comment"""
         form = CommentsForm(request.POST)
         product = get_object_or_404(Product, pk=pk)
-        print(form.data)
         if form.is_valid():
-            print("True")
             form = form.save(commit=False)
             form.product = product
             form.save()
@@ -80,7 +78,6 @@ class ProductDetailView(DetailView):
         context["comments"] = get_object_or_404(
             super().get_queryset(), pk=self.kwargs["pk"]
         ).comments_set.all()
-        print(context["comments"])
         if self.request.user.is_authenticated:
             context["profile"] = self.request.user.profile
         return context
@@ -136,7 +133,6 @@ class FilterProductView(ProductListView):
         price__lte = self.request.GET.get("price__lte")
         star = self.request.GET.getlist("star")
         tags = self.request.GET.getlist("tags")
-        print(star)
         try:
             queryset = filter_func(category_pk, price__gte, price__lte, star, tags)
         except ValueError:
@@ -163,7 +159,6 @@ class AccountRegisterView(FormView):
         form.wish_list = WishList.objects.create()
         """ Create cart """
         form.cart = Cart.objects.create()
-        print(form.cart)
         DescriptionProductCart.objects.create(cart=form.cart)
         form.save()
         profile = get_object_or_404(Profile, username=username)
