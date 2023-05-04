@@ -7,30 +7,53 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('shop_app', '0002_cart_quantity_products'),
+        ("shop_app", "0002_cart_quantity_products"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='cart',
-            name='products_in_the_basket',
+            model_name="cart",
+            name="products_in_the_basket",
         ),
         migrations.RemoveField(
-            model_name='cart',
-            name='quantity_products',
+            model_name="cart",
+            name="quantity_products",
         ),
         migrations.CreateModel(
-            name='DescriptionProductCart',
+            name="DescriptionProductCart",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('quality', models.PositiveIntegerField(default=1)),
-                ('cart', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='shop_app.cart')),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='shop_app.product')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("quality", models.PositiveIntegerField(default=1)),
+                (
+                    "cart",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="shop_app.cart"
+                    ),
+                ),
+                (
+                    "product",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="shop_app.product",
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='cart',
-            name='products_in_the_cart',
-            field=models.ManyToManyField(blank=True, through='shop_app.DescriptionProductCart', to='shop_app.product'),
+            model_name="cart",
+            name="products_in_the_cart",
+            field=models.ManyToManyField(
+                blank=True,
+                through="shop_app.DescriptionProductCart",
+                to="shop_app.product",
+            ),
         ),
     ]

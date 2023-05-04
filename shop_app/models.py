@@ -12,13 +12,15 @@ class Product(models.Model):
     in_reality = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    photos = models.ImageField(upload_to='photos/%Y/%m/%d/', blank=True)
-    category = models.ForeignKey('Category', on_delete=models.SET_DEFAULT, default='Others')
+    photos = models.ImageField(upload_to="photos/%Y/%m/%d/", blank=True)
+    category = models.ForeignKey(
+        "Category", on_delete=models.SET_DEFAULT, default="Others"
+    )
     trademark = models.CharField(max_length=150)
     country = models.CharField(max_length=150)
     count_in_reality = models.IntegerField(blank=True)
     discount = models.IntegerField(blank=True, default=0)
-    tags = models.ManyToManyField('Tag', blank=True)
+    tags = models.ManyToManyField("Tag", blank=True)
     avg_rating = models.IntegerField(blank=True, default=5)
     count_comments = models.IntegerField(blank=True, default=0)
 
@@ -28,15 +30,15 @@ class Product(models.Model):
         return self.price * self.discount / 100
 
     def get_absolute_url(self):
-        return f'/bsm_shop/{self.pk}/'
+        return f"/bsm_shop/{self.pk}/"
 
     def __str__(self):
-        return f'{self.title}'
+        return f"{self.title}"
 
     class Meta:
-        verbose_name = 'Product'
-        verbose_name_plural = 'Products'
-        ordering = ['title']
+        verbose_name = "Product"
+        verbose_name_plural = "Products"
+        ordering = ["title"]
 
 
 class Coupon(models.Model):
@@ -46,84 +48,103 @@ class Coupon(models.Model):
 
 
 class Category(models.Model):
-    title = models.CharField(max_length=150, )
+    title = models.CharField(
+        max_length=150,
+    )
 
     def __str__(self):
-        return f'{self.title}'
+        return f"{self.title}"
 
     class Meta:
-        verbose_name = 'Category'
-        verbose_name_plural = 'Сategories'
-        ordering = ['title']
+        verbose_name = "Category"
+        verbose_name_plural = "Сategories"
+        ordering = ["title"]
 
 
 class Comments(models.Model):
     nickname = models.CharField(max_length=150)
     description_comment = models.TextField(max_length=500)
     created_at_comment = models.DateTimeField(auto_now_add=True)
-    profile = models.ForeignKey('Profile', on_delete=models.CASCADE, null=True, blank=True)
+    profile = models.ForeignKey(
+        "Profile", on_delete=models.CASCADE, null=True, blank=True
+    )
     rating_products = models.IntegerField(default=5)
     email = models.EmailField()
-    product = models.ForeignKey('Product', on_delete=models.CASCADE, null=True, blank=True)
+    product = models.ForeignKey(
+        "Product", on_delete=models.CASCADE, null=True, blank=True
+    )
 
     def get_absolute_url(self):
-        return f'/bsm_shop/{self.pk}/'
+        return f"/bsm_shop/{self.pk}/"
 
     class Meta:
-        verbose_name = 'Comment'
-        verbose_name_plural = 'Comments'
-        ordering = ['profile']
+        verbose_name = "Comment"
+        verbose_name_plural = "Comments"
+        ordering = ["profile"]
 
 
 class Profile(User):
     count_of_buy = models.IntegerField(default=0)
     phone = PhoneNumberField()
     spent_money = models.FloatField(blank=True, default=0)
-    cart = models.OneToOneField('Cart', on_delete=models.CASCADE)
-    wish_list = models.OneToOneField('WishList', on_delete=models.CASCADE)
+    cart = models.OneToOneField("Cart", on_delete=models.CASCADE)
+    wish_list = models.OneToOneField("WishList", on_delete=models.CASCADE)
     balance = models.FloatField(default=0)
-    coupon = models.ForeignKey('Coupon', blank=True, null=True, on_delete=models.SET_NULL)
+    coupon = models.ForeignKey(
+        "Coupon", blank=True, null=True, on_delete=models.SET_NULL
+    )
     coupon_history = models.CharField(max_length=300, blank=True)
     count_product_in_wish_list = models.IntegerField(default=0, blank=True)
     count_product_in_cart = models.IntegerField(default=0, blank=True)
 
     def __str__(self):
-        return f'{super().username}'
+        return f"{super().username}"
 
     class Meta:
-        verbose_name = 'Profile'
-        verbose_name_plural = 'Profiles'
+        verbose_name = "Profile"
+        verbose_name_plural = "Profiles"
 
 
 class Cart(models.Model):
-    products_in_the_cart = models.ManyToManyField('Product', blank=True, through='DescriptionProductCart')
+    products_in_the_cart = models.ManyToManyField(
+        "Product", blank=True, through="DescriptionProductCart"
+    )
 
 
 class DescriptionProductCart(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='product_description')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True,
-                                related_name='product_description')
+    cart = models.ForeignKey(
+        Cart, on_delete=models.CASCADE, related_name="product_description"
+    )
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name="product_description",
+    )
     quality = models.PositiveIntegerField(default=1, blank=True, null=True)
 
 
 class WishList(models.Model):
-    products_in_the_preferences = models.ManyToManyField('Product', blank=True)
+    products_in_the_preferences = models.ManyToManyField("Product", blank=True)
 
 
 class Checkout(models.Model):
-    profile = models.ForeignKey('Profile', on_delete=models.CASCADE, null=True, blank=True)
+    profile = models.ForeignKey(
+        "Profile", on_delete=models.CASCADE, null=True, blank=True
+    )
     address = models.CharField(max_length=150)
     city = models.CharField(max_length=150)
     country = models.CharField(max_length=150)
     postcode = models.CharField(max_length=150)
-    product_to_buy = models.ManyToManyField('Product', blank=True)
+    product_to_buy = models.ManyToManyField("Product", blank=True)
     price = models.FloatField(default=0, blank=True)
     product_quality = models.TextField(blank=True, max_length=1000)
 
 
 class Compare(models.Model):
-    profile = models.OneToOneField('Profile', on_delete=models.CASCADE)
-    product_to_compare = models.ManyToManyField('Product', blank=True)
+    profile = models.OneToOneField("Profile", on_delete=models.CASCADE)
+    product_to_compare = models.ManyToManyField("Product", blank=True)
 
 
 class ContactUs(models.Model):
@@ -134,4 +155,6 @@ class ContactUs(models.Model):
 
 
 class Tag(models.Model):
-    title = models.CharField(max_length=150, )
+    title = models.CharField(
+        max_length=150,
+    )

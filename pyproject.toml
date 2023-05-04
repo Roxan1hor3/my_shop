@@ -48,6 +48,7 @@ tzdata = "2022.4"
 urllib3 = "1.26.12"
 wcwidth = "0.2.5"
 yarg = "0.1.9"
+pre-commit = "^3.3.1"
 
 
 [build-system]

@@ -6,38 +6,38 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('shop_app', '0018_rename_tredemark_product_trademark'),
+        ("shop_app", "0018_rename_tredemark_product_trademark"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='checkout',
-            name='price',
+            model_name="checkout",
+            name="price",
             field=models.FloatField(blank=True, default=0),
         ),
         migrations.AlterField(
-            model_name='comments',
-            name='description_comment',
+            model_name="comments",
+            name="description_comment",
             field=models.TextField(max_length=500),
         ),
         migrations.AlterField(
-            model_name='descriptionproductcart',
-            name='quality',
+            model_name="descriptionproductcart",
+            name="quality",
             field=models.PositiveIntegerField(blank=True, default=1),
         ),
         migrations.AlterField(
-            model_name='profile',
-            name='count_product_in_cart',
+            model_name="profile",
+            name="count_product_in_cart",
             field=models.IntegerField(blank=True, default=0),
         ),
         migrations.AlterField(
-            model_name='profile',
-            name='count_product_in_wish_list',
+            model_name="profile",
+            name="count_product_in_wish_list",
             field=models.IntegerField(blank=True, default=0),
         ),
         migrations.AlterField(
-            model_name='profile',
-            name='spent_money',
+            model_name="profile",
+            name="spent_money",
             field=models.FloatField(blank=True, default=0),
         ),
     ]

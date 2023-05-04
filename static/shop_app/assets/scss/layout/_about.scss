@@ -160,7 +160,7 @@
     }
 }
 .team-social{
-    & a{ 
+    & a{
         & i{
             font-size: 12px;
             height: 30px;
@@ -307,14 +307,14 @@
     top: 20%;
     @media #{$xs} {
         right: 5px;
-    }  
+    }
 }
 .accordion-button:not(.collapsed)::after{
     background-image: none;
     content: '\f068';
     transform: rotate(0deg);
 }
-// error-content    
+// error-content
 .error-content{
     & h5{
         font-size: 48px;
@@ -376,7 +376,7 @@
     & .login-action input {
         width: inherit;
         height: auto;
-        } 
+        }
     & .login-action label {
         display: inline-block;
         margin-left: 5px;

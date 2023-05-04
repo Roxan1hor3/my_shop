@@ -25,57 +25,57 @@
     font-weight: 400;
     text-transform: capitalize;
   }
-  
+
   .table-content table td.product-name a:hover {
     color: #fcbe00;
   }
-  
+
   .table-content table td {
     border-top: medium none;
     padding: 20px 10px;
     vertical-align: middle;
     font-size: 16px;
   }
-  
+
   .table-content table th, .table-content table td {
     border-bottom: 1px solid #e4e4e4;
     border-right: 1px solid #e4e4e4;
   }
-  
+
   .product-quantity input {
       color: #000;
       font-size: 14px;
       font-weight: normal;
       border: 1px solid #dcdcdc;
   }
-  
+
   .table td, .table th {
       border-top: 1px solid #e4e4e4;
   }
-  
+
   .product-quantity > input {
     width: 80px;
     border-radius: 3px;
   }
-  
+
   .table-content table td.product-subtotal {
     font-size: 16px;
   }
-  
+
   .table-content table td .cart-plus-minus {
     float: none;
     margin: 0 auto;
     position: relative;
   }
-  
+
   .coupon-all {
     margin-top: 50px;
   }
-  
+
   .coupon {
     float: left;
   }
-  
+
   @media (max-width: 767px) {
     .coupon {
       float: none;
@@ -91,38 +91,38 @@
         color: #6f7172;
       }
   }
-  
+
   @media (max-width: 767px) {
     #coupon_code {
       margin-bottom: 15px;
     }
   }
-  
+
   .coupon2 {
     float: right;
   }
-  
+
   @media (max-width: 767px) {
     .coupon2 {
       float: none;
       margin-top: 15px;
     }
   }
-  
+
   .cart-page-total {
     padding-top: 50px;
   }
-  
+
   .cart-page-total > h2 {
       font-size: 25px;
       margin-bottom: 20px;
       text-transform: capitalize;
   }
-  
+
   .cart-page-total > ul {
     border: 1px solid #e4e4e4;
   }
-  
+
   .cart-page-total > ul > li {
     list-style: none;
     font-size: 15px;
@@ -131,11 +131,11 @@
     border-bottom: 1px solid #e4e4e4;
     font-weight: 400;
   }
-  
+
   .cart-page-total ul > li > span {
     float: right;
   }
-  
+
   .cart-page-total li:last-child {
     border-bottom: 0;
   }
@@ -144,7 +144,7 @@
   }
 
 
- 
+
 /* 17. Checkout */
 .coupon-accordion h3 {
 	background-color: #f6f6f6;
@@ -673,5 +673,3 @@ p.checkout-coupon input[type="text"] {
 .cart-plus-minus .inc {
     right: 20px;
 }
-
-

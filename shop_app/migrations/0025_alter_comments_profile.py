@@ -7,13 +7,18 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('shop_app', '0024_alter_comments_nickname'),
+        ("shop_app", "0024_alter_comments_nickname"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='comments',
-            name='profile',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='shop_app.profile'),
+            model_name="comments",
+            name="profile",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="shop_app.profile",
+            ),
         ),
     ]

@@ -280,7 +280,7 @@
             text-transform: capitalize;
             padding: 0;
             background: transparent;
-            
+
             border: none;
             &.active{
                 color: $d-yellow;
@@ -864,7 +864,7 @@
                 &.selected{
                     box-shadow: 0 0 0 1px $black,inset 0 0 0 2px #fff;
                 }
-                
+
                 &:hover{
                     box-shadow: 0 0 0 1px $black,inset 0 0 0 2px #fff;
                 }

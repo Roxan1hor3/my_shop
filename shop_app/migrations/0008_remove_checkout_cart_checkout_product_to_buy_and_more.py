@@ -7,22 +7,24 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('shop_app', '0007_rename_county_checkout_country'),
+        ("shop_app", "0007_rename_county_checkout_country"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='checkout',
-            name='cart',
+            model_name="checkout",
+            name="cart",
         ),
         migrations.AddField(
-            model_name='checkout',
-            name='product_to_buy',
-            field=models.ManyToManyField(blank=True, to='shop_app.product'),
+            model_name="checkout",
+            name="product_to_buy",
+            field=models.ManyToManyField(blank=True, to="shop_app.product"),
         ),
         migrations.AlterField(
-            model_name='checkout',
-            name='profile',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='shop_app.profile'),
+            model_name="checkout",
+            name="profile",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="shop_app.profile"
+            ),
         ),
     ]

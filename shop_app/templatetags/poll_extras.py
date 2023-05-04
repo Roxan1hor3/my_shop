@@ -9,7 +9,7 @@ register = template.Library()
 
 @register.filter(is_safe=True)
 def create_star_rating(rating=MAX_COUNT_STAR):
-    """ To output the rating in stars """
+    """To output the rating in stars"""
     html_star_rating = FILLED_STARS * rating
     html_star_rating += EMPTY_STARS * (MAX_COUNT_STAR - rating)
     return mark_safe(html_star_rating)
@@ -24,25 +24,25 @@ def count(value=None):
 
 @register.simple_tag
 def category_choice():
-    """ To display categories in the headers """
-    html_all_categories = '<option>All categories</option>\n'
+    """To display categories in the headers"""
+    html_all_categories = "<option>All categories</option>\n"
     for item in Category.objects.all():
         html_all_categories += f"<option>{item.title}</option>\n"
     return mark_safe(html_all_categories)
 
 
-@register.filter(name='zip')
+@register.filter(name="zip")
 def zip_lists(a, b):
     return zip(a, b)
 
 
-@register.filter(name='discount_coupon')
+@register.filter(name="discount_coupon")
 def discount_coupon(total, discount):
     if discount is None:
         discount = 0
-    return total * (100-discount) / 100
+    return total * (100 - discount) / 100
 
 
-@register.filter(name='multiply')
+@register.filter(name="multiply")
 def multiply(a, b):
-    return a*b
+    return a * b

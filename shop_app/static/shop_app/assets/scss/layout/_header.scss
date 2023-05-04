@@ -333,7 +333,7 @@
                 }
             }
         }
-        
+
     }
 }
 //header-bottom
@@ -513,7 +513,7 @@
 .cart{
     &__mini{
         @media #{$xs} {
-           width: 300px; 
+           width: 300px;
         }
       position: absolute;
       top: 120%;
@@ -1013,7 +1013,7 @@
                         @include transform(rotate(-90deg) translateY(-50%));
                     }
                 }
-               
+
                 & > ul.submenu{
                     position: absolute;
                     top: 20%;

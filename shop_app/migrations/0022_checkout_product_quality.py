@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('shop_app', '0021_remove_profile_history_of_buy'),
+        ("shop_app", "0021_remove_profile_history_of_buy"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='checkout',
-            name='product_quality',
+            model_name="checkout",
+            name="product_quality",
             field=models.CharField(blank=True, max_length=1000),
         ),
     ]

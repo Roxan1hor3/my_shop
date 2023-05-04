@@ -21,20 +21,25 @@ with open(".gitignore", "a") as fh:
 if not os.path.exists("./pyproject.toml"):
     os.system("poetry init")
 
-with open(sourceFile, 'r', encoding="utf-16") as fh:
+with open(sourceFile, "r", encoding="utf-16") as fh:
     requirements = fh.read()
 
 noComments = re.sub("^#.*$", "", requirements, 0, re.IGNORECASE | re.MULTILINE)
-bareRequirements = re.sub("\n+", "\n", noComments, 0, re.IGNORECASE | re.MULTILINE).strip()
+bareRequirements = re.sub(
+    "\n+", "\n", noComments, 0, re.IGNORECASE | re.MULTILINE
+).strip()
 
-pipPoetryMap = {
-    ">": "^",
-    "=": ""
-}
+pipPoetryMap = {">": "^", "=": ""}
 
 reqList = list()
 for line in bareRequirements.splitlines():
-    package, match, version = re.sub(r"^(.*?)\s*([~>=<])=\s*v?([0-9\.\*]+)", r"\1,\2,\3", line, 0, re.IGNORECASE | re.MULTILINE).split(",")
+    package, match, version = re.sub(
+        r"^(.*?)\s*([~>=<])=\s*v?([0-9\.\*]+)",
+        r"\1,\2,\3",
+        line,
+        0,
+        re.IGNORECASE | re.MULTILINE,
+    ).split(",")
     try:
         poetryMatch = pipPoetryMap[match]
     except KeyError:
