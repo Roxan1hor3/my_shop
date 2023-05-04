@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 from django.views.generic import DetailView, FormView, UpdateView, ListView
 from django.views.generic.base import View
 
-from my_shop.settings import EMAIL_HOST_USER
+from my_shop import EMAIL_HOST_USER
 from shop_app.forms import CommentsForm, UserRegisterForm, CheckoutForm
 from shop_app.models import Product, Profile, WishList, Cart, DescriptionProductCart, Coupon, Checkout, Category, Tag
 from shop_app.utils import get_sum_product, create_product_quality, send_email_checkout, send_email_error, filter_func
