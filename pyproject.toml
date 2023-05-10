@@ -49,6 +49,9 @@ urllib3 = "1.26.12"
 wcwidth = "0.2.5"
 yarg = "0.1.9"
 pre-commit = "^3.3.1"
+factory-boy = "^3.2.1"
+pytest = "^7.3.1"
+pytest-django = "^4.5.2"
 
 
 [build-system]
