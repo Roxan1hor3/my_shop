@@ -82,10 +82,10 @@ WSGI_APPLICATION = "my_shop.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": os.environ.get("POSTGRES_ENGINE", "django.db.backends.sqlite3"),
-        "NAME": os.environ.get("POSTGRES_DB", os.path.join(BASE_DIR, "db.sqlite3")),
-        "USER": os.environ.get("POSTGRES_USER", "user"),
-        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "password"),
+        "ENGINE": os.environ.get("POSTGRES_ENGINE", "django.db.backends.postgresql"),
+        "NAME": os.environ.get("POSTGRES_DB", "bsm"),
+        "USER": os.environ.get("POSTGRES_USER", "postgres"),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "123qwerqwer"),
         "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
         "PORT": os.environ.get("POSTGRES_PORT", "5432"),
     }
@@ -143,8 +143,8 @@ INTERNAL_IPS = [
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
-EMAIL_HOST_USER = "roxanhor@gmail.com"
-EMAIL_HOST_PASSWORD = "lxjevevhovfwmumy"
+EMAIL_HOST_USER = "bshyncarxhuck@gmail.com"
+EMAIL_HOST_PASSWORD = "tqpkidffajcmtlem"
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
