@@ -1,6 +1,6 @@
 import factory
 
-from shop_app.models import Profile, Cart, Coupon, WishList
+from shop_app.models import Cart, Coupon, Profile, WishList
 
 
 class ProfileFactory(factory.django.DjangoModelFactory):

@@ -1,5 +1,5 @@
 from django.core.mail import send_mail
-from django.db.models import QuerySet, Q
+from django.db.models import Q, QuerySet
 
 from my_shop.settings import EMAIL_HOST_USER
 from shop_app.models import Product

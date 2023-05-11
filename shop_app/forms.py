@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
-from .models import Comments, Profile, Checkout
+from .models import Checkout, Comments, Profile
 
 
 class CommentsForm(forms.ModelForm):

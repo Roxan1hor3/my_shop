@@ -2,30 +2,30 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.mail import send_mail
 from django.db.models import Avg
-from django.shortcuts import redirect, get_object_or_404, render, get_list_or_404
+from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, FormView, UpdateView, ListView
+from django.views.generic import DetailView, FormView, ListView, UpdateView
 from django.views.generic.base import View
 
 from my_shop.settings import EMAIL_HOST_USER
-from shop_app.forms import CommentsForm, UserRegisterForm, CheckoutForm
+from shop_app.forms import CheckoutForm, CommentsForm, UserRegisterForm
 from shop_app.models import (
+    Cart,
+    Category,
+    Checkout,
+    Coupon,
+    DescriptionProductCart,
     Product,
     Profile,
-    WishList,
-    Cart,
-    DescriptionProductCart,
-    Coupon,
-    Checkout,
-    Category,
     Tag,
+    WishList,
 )
 from shop_app.utils import (
-    get_sum_product,
     create_product_quality,
+    filter_func,
+    get_sum_product,
     send_email_checkout,
     send_email_error,
-    filter_func,
 )
 
 

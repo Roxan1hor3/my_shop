@@ -2,7 +2,7 @@ from django import template
 from django.utils.safestring import mark_safe
 
 from shop_app.models import Category
-from shop_app.special_variables import MAX_COUNT_STAR, FILLED_STARS, EMPTY_STARS
+from shop_app.special_variables import EMPTY_STARS, FILLED_STARS, MAX_COUNT_STAR
 
 register = template.Library()
 

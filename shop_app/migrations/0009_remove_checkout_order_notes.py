@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("shop_app", "0008_remove_checkout_cart_checkout_product_to_buy_and_more"),
     ]
