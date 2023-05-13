@@ -63,7 +63,7 @@ class ProductDetailView(DetailView):
     template_name = "shop_app/product-details.html"
 
     def get_queryset(self):
-        """Take category and tags"""
+        """Get category and tags"""
         return (
             super()
             .get_queryset()
@@ -74,7 +74,7 @@ class ProductDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        """ Take comments """
+        """ Get comments """
         context["comments"] = get_object_or_404(
             super().get_queryset(), pk=self.kwargs["pk"]
         ).comments_set.all()
