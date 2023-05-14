@@ -235,7 +235,7 @@ class AddProductToWishList(View):
         profile = request.user.profile
         profile.count_product_in_wish_list += 1
         profile.save()
-        return redirect(request.META.get("HTTP_REFERER"))
+        return redirect(f"/bsm_shop/wishlist/{wish_list_id}/")
 
 
 class RemoveProductFromWishList(View):
@@ -249,7 +249,7 @@ class RemoveProductFromWishList(View):
         profile = request.user.profile
         profile.count_product_in_wish_list -= 1
         profile.save()
-        return redirect(request.META.get("HTTP_REFERER"))
+        return redirect(f"/bsm_shop/wishlist/{wish_list_id}/")
 
 
 class CartView(DetailView):
@@ -287,7 +287,7 @@ class AddProductToCart(View):
         profile = request.user.profile
         profile.count_product_in_cart += 1
         profile.save()
-        return redirect(request.META.get("HTTP_REFERER"))
+        return redirect(f"/bsm_shop/{cart.pk}/")
 
 
 class RemoveProductFromCart(View):
@@ -299,7 +299,7 @@ class RemoveProductFromCart(View):
         profile = request.user.profile
         profile.count_product_in_cart -= 1
         profile.save()
-        return redirect(request.META.get("HTTP_REFERER"))
+        return redirect(f"/bsm_shop/{cart.pk}/")
 
 
 class ChangeQuality(View):
@@ -322,7 +322,7 @@ class SetCoupon(View):
         coupon = get_object_or_404(Coupon, title=request_dict["coupon"])
         profile.coupon = coupon
         profile.save()
-        return redirect(request.META.get("HTTP_REFERER"))
+        return redirect(f"/bsm_shop/{profile.pk}/{profile.cart.pk}/")
 
 
 class CheckoutView(View):

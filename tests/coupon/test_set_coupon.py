@@ -1,7 +1,6 @@
 import pytest
 from django.shortcuts import get_object_or_404
 from django.test import Client
-from django.urls import reverse
 
 from shop_app.models import Cart, Coupon, Profile, WishList
 
@@ -16,17 +15,17 @@ def test_set_coupon():
         email="Roxanhor@gmail.com",
         phone="+380988181628",
         password="!234QWERasdf",
-        is_active=False,
+        is_active=True,
         cart=Cart.objects.create(),
         wish_list=WishList.objects.create(),
     )
     coupon = Coupon.objects.create(title="qwer", discount=12, is_active=True)
     response = client.post(
-        f"/bsm_shop/cart/set_coupon/{profile.pk}/",
+        f"/bsm_shop/cart/set_coupon/{profile.pk}",
         data=dict(coupon="qwer", apply_coupon=""),
     )
+    assert response.status_code == 302
     db_profile = get_object_or_404(Profile, pk=profile.pk)
     db_coupon = get_object_or_404(Coupon, title=coupon.title)
-    print(db_coupon.title)
     assert db_profile.coupon == db_coupon
-    assert db_profile.is_active == True
+    assert db_profile.is_active is True

@@ -5,7 +5,7 @@ from my_shop.settings import EMAIL_HOST_USER
 from shop_app.models import Product
 
 
-def get_sum_product(product: QuerySet, description: QuerySet, coupon: int):
+def get_sum_product(product: QuerySet, description: QuerySet, coupon=None):
     sum_product = 0
     if coupon is None:
         coupon = 0

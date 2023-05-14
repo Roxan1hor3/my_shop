@@ -45,7 +45,7 @@ def test_activate_account():
     )
     db_profile = Profile.objects.get(username="Roxan1hor333")
     assert db_profile.username == "Roxan1hor333"
-    assert db_profile.is_active == True
+    assert db_profile.is_active is True
 
 
 @pytest.mark.django_db
